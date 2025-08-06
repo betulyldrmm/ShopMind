@@ -34,7 +34,7 @@ function Stores() {
     <div className="page-container">
       <div className="content-wrapper">
 
-        {/* Başlık */}
+
         <div className="page-header">
           <h1 className="page-title">Türkiye Genelinde Mağazalarımız</h1>
           <p className="page-subtitle">
@@ -42,7 +42,7 @@ function Stores() {
           </p>
         </div>
 
-        {/* Bilgilendirme */}
+     
         <div className="content-section">
           <h2 className="section-title">E-Ticaret ile Entegre Mağazacılık</h2>
           <p className="section-text">
@@ -55,7 +55,7 @@ function Stores() {
           </p>
         </div>
 
-        {/* Mağaza Kartları */}
+     
         <div className="content-section">
           <h2 className="section-title">Mağaza Konumlarımız</h2>
           <div className="stores-grid">
@@ -84,7 +84,7 @@ function Stores() {
           </div>
         </div>
 
-        {/* CTA */}
+     
         <div className="cta-section">
           <h2 className="cta-title">Hemen Sipariş Verin, Mağazadan Teslim Alın</h2>
           <p className="cta-text">

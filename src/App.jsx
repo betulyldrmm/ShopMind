@@ -21,6 +21,7 @@ import Stores from './pages/About/Stores';
 import About from './pages/About/About';
 import Contact from './pages/About/Contact';
 import Arac from './pages/baba/otomobil/arac';
+import Nostalji from './pages/BuyukBaba/Nostalji/Nostalji';
 function App() {
   return (
     <BrowserRouter>
@@ -48,6 +49,7 @@ function App() {
       <Route path='/Stores' element={<Stores/>}/>
       <Route path='/Contact' element={<Contact/>}/>
       <Route path='/baba/otomobil/arac' element={<Arac/>}/>
+      <Route path='/buyukBaba/nostalji/nostalji' element={<Nostalji/>}/>
       </Routes>
     </BrowserRouter>
   );

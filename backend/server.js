@@ -1,4 +1,4 @@
-// server.js - ROUTER SIRALAMA DÜZELTMESİ VE PROFİL ENDPOİNTLERİ
+
 
 const express = require('express');
 const cors = require('cors');
@@ -7,7 +7,7 @@ const { Pool } = require('pg');
 
 const app = express();
 
-// ⚠️ COMMENTS ROUTER'I EN BAŞTA TANIMLA
+
 const commentsRouter = require('./routes/comments');
 
 // CORS ayarları
@@ -26,16 +26,15 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 
-// OPTIONS isteklerini handle et
+
 app.options('*', cors());
 
-// JSON middleware
 app.use(express.json());
 
-// ✅ COMMENTS ROUTER'INI EN BAŞTA KULLAN (diğer route'lardan önce)
+
 app.use('/api/comments', commentsRouter);
 
-// PostgreSQL bağlantı ayarları
+
 const pool = new Pool({
   user: 'postgres',          
   host: 'localhost',         
@@ -47,13 +46,12 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000, 
 });
 
-// Veritabanı bağlantısını test et ve tabloları oluştur
 async function initDatabase() {
   try {
     const client = await pool.connect();
     console.log('✅ PostgreSQL bağlantısı başarılı');
     
-    // Users tablosunu oluştur (yoksa)
+    
     await client.query(`
       CREATE TABLE IF NOT EXISTS users (
         id VARCHAR(255) PRIMARY KEY,
@@ -70,7 +68,6 @@ async function initDatabase() {
       )
     `);
 
-    // Categories tablosunu oluştur (yoksa)
     await client.query(`
       CREATE TABLE IF NOT EXISTS categories (
         id SERIAL PRIMARY KEY,
@@ -82,7 +79,7 @@ async function initDatabase() {
       )
     `);
 
-    // Products tablosunu oluştur (yoksa)
+ 
     await client.query(`
       CREATE TABLE IF NOT EXISTS products (
         id SERIAL PRIMARY KEY,
@@ -97,7 +94,7 @@ async function initDatabase() {
       )
     `);
 
-    // Popular Products tablosunu oluştur (yoksa)
+    
     await client.query(`
       CREATE TABLE IF NOT EXISTS popular_products (
         product_id INTEGER PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
@@ -105,7 +102,7 @@ async function initDatabase() {
       )
     `);
     
-    // Eğer categories tablosu boşsa varsayılan kategoriler ekle
+  
     const categoryCheck = await client.query('SELECT COUNT(*) FROM categories');
     if (parseInt(categoryCheck.rows[0].count) === 0) {
       await client.query(`
@@ -130,14 +127,14 @@ async function initDatabase() {
   }
 }
 
-// Static files (resimler için)
+
 app.use('/images', express.static('public/images'));
 
 // =============================================
 // PROFİL API ENDPOINTS - BAŞTA OLMALI
 // =============================================
 
-// Kullanıcı profilini getir
+
 app.get('/api/users/:id/profile', async (req, res) => {
   console.log('👤 Profil bilgileri istendi, ID:', req.params.id);
   
@@ -192,7 +189,7 @@ app.get('/api/users/:id/stats', async (req, res) => {
   const { id } = req.params;
   
   try {
-    // Önce kullanıcının var olup olmadığını kontrol et
+  
     const userCheck = await pool.query('SELECT id, created_at FROM users WHERE id = $1', [id]);
     
     if (userCheck.rows.length === 0) {
@@ -206,7 +203,7 @@ app.get('/api/users/:id/stats', async (req, res) => {
     const user = userCheck.rows[0];
     const membershipDays = Math.floor((new Date() - new Date(user.created_at)) / (1000 * 60 * 60 * 24));
     
-    // Şimdilik sabit değerler döndürelim - ileride gerçek sipariş tablosu olacak
+    
     const stats = {
       totalOrders: Math.floor(Math.random() * 20) + 1,
       totalSpent: (Math.random() * 5000 + 100).toFixed(2),
@@ -230,7 +227,6 @@ app.get('/api/users/:id/stats', async (req, res) => {
   }
 });
 
-// Profil bilgilerini güncelle
 app.put('/api/users/:id/profile', async (req, res) => {
   console.log('✏️ Profil güncelleme istendi, ID:', req.params.id);
   
@@ -238,7 +234,7 @@ app.put('/api/users/:id/profile', async (req, res) => {
   const { firstName, lastName, phone, birthDate, profileImage } = req.body;
   
   try {
-    // Önce kullanıcının var olup olmadığını kontrol et
+   
     const userCheck = await pool.query('SELECT id FROM users WHERE id = $1', [id]);
     
     if (userCheck.rows.length === 0) {
@@ -249,7 +245,7 @@ app.put('/api/users/:id/profile', async (req, res) => {
       });
     }
     
-    // Profil bilgilerini güncelle
+ 
     const result = await pool.query(`
       UPDATE users 
       SET 
@@ -291,7 +287,7 @@ app.put('/api/users/:id/profile', async (req, res) => {
   }
 });
 
-// Şifre değiştir
+
 app.put('/api/users/:id/change-password', async (req, res) => {
   console.log('🔐 Şifre değiştirme istendi, ID:', req.params.id);
   
@@ -315,7 +311,7 @@ app.put('/api/users/:id/change-password', async (req, res) => {
   }
   
   try {
-    // Kullanıcıyı ve mevcut şifresini getir
+  
     const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
     
     if (userResult.rows.length === 0) {
@@ -328,7 +324,7 @@ app.put('/api/users/:id/change-password', async (req, res) => {
     
     const user = userResult.rows[0];
     
-    // Mevcut şifreyi doğrula
+    
     const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
     if (!isCurrentPasswordValid) {
       console.log('❌ Mevcut şifre yanlış:', user.username);
@@ -338,10 +334,10 @@ app.put('/api/users/:id/change-password', async (req, res) => {
       });
     }
     
-    // Yeni şifreyi hashle
+ 
     const hashedNewPassword = await bcrypt.hash(newPassword, 12);
     
-    // Şifreyi güncelle
+
     await pool.query(
       'UPDATE users SET password = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
       [hashedNewPassword, id]
@@ -363,7 +359,7 @@ app.put('/api/users/:id/change-password', async (req, res) => {
   }
 });
 
-// Kullanıcı adını güncelle
+
 app.put('/api/users/:id/username', async (req, res) => {
   console.log('📝 Kullanıcı adı güncelleme istendi, ID:', req.params.id);
   
@@ -379,7 +375,7 @@ app.put('/api/users/:id/username', async (req, res) => {
   }
   
   try {
-    // Önce kullanıcının var olup olmadığını kontrol et
+   
     const userCheck = await pool.query('SELECT id, username FROM users WHERE id = $1', [id]);
     
     if (userCheck.rows.length === 0) {
@@ -390,7 +386,6 @@ app.put('/api/users/:id/username', async (req, res) => {
       });
     }
     
-    // Yeni kullanıcı adının zaten alınıp alınmadığını kontrol et
     const usernameCheck = await pool.query(
       'SELECT id FROM users WHERE username = $1 AND id != $2',
       [newUsername.trim(), id]
@@ -404,7 +399,7 @@ app.put('/api/users/:id/username', async (req, res) => {
       });
     }
     
-    // Kullanıcı adını güncelle
+   
     const result = await pool.query(
       'UPDATE users SET username = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING username',
       [newUsername.trim(), id]
@@ -431,7 +426,7 @@ app.put('/api/users/:id/username', async (req, res) => {
 // AUTH ENDPOINTS
 // =============================================
 
-// KAYIT OL (REGISTER)
+
 app.post('/api/register', async (req, res) => {
   console.log('📝 Kayıt isteği geldi:', req.body);
   
@@ -522,7 +517,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// GİRİŞ YAP (LOGIN)
+
 app.post('/api/login', async (req, res) => {
   console.log('🔐 Giriş isteği geldi:', req.body);
   
@@ -591,7 +586,7 @@ app.post('/api/login', async (req, res) => {
 // PRODUCTS API ENDPOINTS
 // =============================================
 
-// Tüm ürünleri getir
+
 app.get('/api/products', async (req, res) => {
   console.log('📦 Ürün listesi istendi');
   try {
@@ -615,7 +610,7 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
-// Tek ürün getir
+
 app.get('/api/products/:id', async (req, res) => {
   console.log('🔍 Tek ürün istendi, ID:', req.params.id);
   try {
@@ -647,7 +642,7 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
-// İndirimli ürünleri getir
+
 app.get('/api/discounted-products', async (req, res) => {
   console.log('🔥 İndirimli ürünler istendi');
   try {
@@ -660,11 +655,11 @@ app.get('/api/discounted-products', async (req, res) => {
       LIMIT 20
     `);
     
-    // Eğer hiç indirimli ürün yoksa, rastgele ürünleri indirimli yap
+   
     if (result.rows.length === 0) {
       console.log('⚠️  Hiç indirimli ürün yok, rastgele ürünleri indirimli yapıyorum...');
       
-      // Rastgele ürünleri seç ve indirim uygula
+    
       await pool.query(`
         UPDATE products 
         SET discount = CASE 
@@ -679,7 +674,7 @@ app.get('/api/discounted-products', async (req, res) => {
         )
       `);
       
-      // Tekrar indirimli ürünleri getir
+   
       const updatedResult = await pool.query(`
         SELECT p.*, c.name as category_name 
         FROM products p 
@@ -774,7 +769,7 @@ app.post('/api/products', async (req, res) => {
 app.get('/api/categories', async (req, res) => {
   console.log('📂 Kategori listesi istendi');
   try {
-    // Sadece istenen ID'lere sahip kategorileri getir
+    
     const allowedIds = [ 2, 3, 4, 5, 6, 7, 8, 29];
     
     const result = await pool.query(`
@@ -810,7 +805,7 @@ app.get('/api/categories', async (req, res) => {
   }
 });
 
-// Alternatif endpoint - Tüm kategorileri getir (admin paneli için)
+
 app.get('/api/categories/all', async (req, res) => {
   console.log('📂 Tüm kategori listesi istendi');
   try {
@@ -827,7 +822,7 @@ app.get('/api/categories/all', async (req, res) => {
   }
 });
 
-// Kategoriye göre ürünleri getir - SLUG desteği (ÖNCE GELMELI)
+
 app.get('/api/categories/:slug/products', async (req, res) => {
   console.log('📂 Kategori ürünleri istendi, slug:', req.params.slug);
   try {
@@ -835,7 +830,7 @@ app.get('/api/categories/:slug/products', async (req, res) => {
     const { sortBy = 'newest', priceMin = 0, priceMax = 99999 } = req.query;
     const allowedIds = [ 2, 3, 4, 5, 6, 7, 8, 11, 29];
     
-    // Önce kategori bilgisini slug ile bul VE izinli olup olmadığını kontrol et
+   
     const categoryResult = await pool.query(
       'SELECT * FROM categories WHERE slug = $1 AND id = ANY($2)',
       [slug, allowedIds]
@@ -852,7 +847,7 @@ app.get('/api/categories/:slug/products', async (req, res) => {
     const category = categoryResult.rows[0];
     console.log('✅ Kategori bulundu:', category.name, 'ID:', category.id);
     
-    // Sıralama SQL'i oluştur
+
     let orderClause = 'ORDER BY p.created_at DESC';
     switch (sortBy) {
       case 'price-low':
@@ -871,7 +866,7 @@ app.get('/api/categories/:slug/products', async (req, res) => {
         orderClause = 'ORDER BY p.created_at DESC';
     }
     
-    // Ürünleri getir
+
     const productsResult = await pool.query(`
       SELECT p.*, c.name as category_name 
       FROM products p 
@@ -907,14 +902,14 @@ app.get('/api/categories/:slug/products', async (req, res) => {
   }
 });
 
-// Kategori detaylarını ID ile getir - SLUG endpoint'inden sonra gelmeli
+
 app.get('/api/categories/:id', async (req, res) => {
   console.log('🔍 Kategori detayı istendi, ID:', req.params.id);
   try {
     const { id } = req.params;
     const allowedIds = [ 2, 3, 4, 5, 6, 7, 8, 11, 29];
     
-    // Sayısal ID kontrolü - eğer sayı değilse 404 döndür
+   
     if (isNaN(parseInt(id))) {
       console.log('❌ Geçersiz ID formatı:', id);
       return res.status(404).json({
@@ -923,7 +918,7 @@ app.get('/api/categories/:id', async (req, res) => {
       });
     }
     
-    // ID kontrolü
+   
     if (!allowedIds.includes(parseInt(id))) {
       console.log('❌ Bu kategori ID\'si erişime kapalı:', id);
       return res.status(403).json({
@@ -957,7 +952,7 @@ app.get('/api/categories/:id', async (req, res) => {
   }
 });
 
-// Kategoriye göre ürünleri getir - ID ile (geriye dönük uyumluluk için)
+
 app.get('/api/categories/:id/products', async (req, res) => {
   console.log('📦 Kategori ürünleri istendi (ID), ID:', req.params.id);
   try {
@@ -965,7 +960,7 @@ app.get('/api/categories/:id/products', async (req, res) => {
     const { sortBy = 'newest', priceMin = 0, priceMax = 99999 } = req.query;
     const allowedIds = [ 2, 3, 4, 5, 6, 7, 8, 11, 29];
     
-    // Sayısal ID kontrolü
+
     if (isNaN(parseInt(id))) {
       console.log('❌ Geçersiz ID formatı:', id);
       return res.status(404).json({
@@ -974,7 +969,7 @@ app.get('/api/categories/:id/products', async (req, res) => {
       });
     }
     
-    // ID kontrolü
+
     if (!allowedIds.includes(parseInt(id))) {
       console.log('❌ Bu kategori ID\'si erişime kapalı:', id);
       return res.status(403).json({
@@ -983,7 +978,7 @@ app.get('/api/categories/:id/products', async (req, res) => {
       });
     }
     
-    // Önce kategori bilgisini al
+ 
     const categoryResult = await pool.query('SELECT * FROM categories WHERE id = $1', [id]);
     
     if (categoryResult.rows.length === 0) {
@@ -1016,7 +1011,7 @@ app.get('/api/categories/:id/products', async (req, res) => {
         orderClause = 'ORDER BY p.created_at DESC';
     }
     
-    // Ürünleri getir
+ 
     const result = await pool.query(`
       SELECT p.*, c.name as category_name 
       FROM products p 
@@ -1029,7 +1024,7 @@ app.get('/api/categories/:id/products', async (req, res) => {
     
     console.log(`✅ ${result.rows.length} ürün bulundu (ID ile)`);
     
-    // Tutarlılık için aynı format döndür
+    
     res.json({
       success: true,
       data: {
@@ -1057,7 +1052,7 @@ app.get('/api/categories/:id/products', async (req, res) => {
 // USERS API ENDPOINTS
 // =============================================
 
-// Tüm kullanıcıları göster
+
 app.get('/api/users', async (req, res) => {
   try {
     console.log('📋 Kullanıcı listesi istendi');
@@ -1082,7 +1077,7 @@ app.get('/api/users', async (req, res) => {
 // UTILITY ENDPOINTS
 // =============================================
 
-// Test endpoint
+
 app.get('/api/test', async (req, res) => {
   try {
     const userResult = await pool.query('SELECT COUNT(*) as total FROM users');
@@ -1107,7 +1102,7 @@ app.get('/api/test', async (req, res) => {
   }
 });
 
-// Veritabanı bağlantısı durumu
+
 app.get('/api/db-status', async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW() as current_time, version() as version');
@@ -1165,7 +1160,7 @@ app.use('*', (req, res) => {
   });
 });
 
-// Error handler
+
 app.use((error, req, res, next) => {
   console.error('💥 Server hatası:', error);
   res.status(500).json({
@@ -1174,7 +1169,6 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Graceful shutdown
 process.on('SIGINT', async () => {
   console.log('\n🛑 Server kapatılıyor...');
   await pool.end();
@@ -1188,7 +1182,6 @@ async function startServer() {
   try {
     await initDatabase();
 
-    // Port binding error handling
     const server = app.listen(PORT, '127.0.0.1', () => {
       console.log('🚀 Server başlatıldı!');
       console.log(`📍 Port: ${PORT}`);
@@ -1223,5 +1216,4 @@ async function startServer() {
   }
 }
 
-// Server'ı başlat
 startServer();

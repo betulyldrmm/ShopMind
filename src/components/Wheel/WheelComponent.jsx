@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Star, User, LogOut, AlertTriangle, Clock, RotateCw, ShoppingCart } from 'lucide-react';
 
 const WheelComponent = () => {
-  // Test için farklı kullanıcılar
+  
   const testUsers = [
     { id: 1, username: 'TestUser1', name: 'Test Kullanıcı 1' },
     { id: 2, username: 'TestUser2', name: 'Test Kullanıcı 2' },
@@ -33,17 +33,17 @@ const WheelComponent = () => {
   const [isDoubleGameActive, setIsDoubleGameActive] = useState(false);
   const [currentSpinId, setCurrentSpinId] = useState(null);
 
-  // Yüksek indirimli ödüller - daha yüksek yüzdeler
+ 
   const prizes = [
-    { id: 1, text: '50 TL İndirim', icon: '💰', color: '#e74c3c', textColor: '#fff', chance: 25, type: 'discount', value: 50 },
-    { id: 2, text: '100 TL İndirim', icon: '💎', color: '#9b59b6', textColor: '#fff', chance: 20, type: 'discount', value: 100 },
-    { id: 3, text: '75 TL İndirim', icon: '🎁', color: '#3498db', textColor: '#fff', chance: 20, type: 'discount', value: 75 },
-    { id: 4, text: '25 TL İndirim', icon: '🎯', color: '#27ae60', textColor: '#fff', chance: 15, type: 'discount', value: 25 },
-    { id: 5, text: '200 TL İndirim', icon: '⭐', color: '#f1c40f', textColor: '#333', chance: 10, type: 'discount', value: 200 },
+    { id: 1, text: '%20 İndirim', icon: '💰', color: '#e74c3c', textColor: '#fff', chance: 25, type: 'discount', value: 50 },
+    { id: 2, text: '%15  İndirim', icon: '💎', color: '#9b59b6', textColor: '#fff', chance: 20, type: 'discount', value: 100 },
+    { id: 3, text: '200 TL İndirim', icon: '🎁', color: '#3498db', textColor: '#fff', chance: 20, type: 'discount', value: 75 },
+    { id: 4, text: '100 TL İndirim', icon: '🎯', color: '#27ae60', textColor: '#fff', chance: 15, type: 'discount', value: 25 },
+    { id: 5, text: '500 TL', icon: '⭐', color: '#f1c40f', textColor: '#333', chance: 10, type: 'discount', value: 200 },
     { id: 6, text: 'Tekrar Çevir', icon: '🔄', color: '#f39c12', textColor: '#fff', chance: 10, type: 'try_again', value: 0 }
   ];
 
-  // Haftada bir kez kontrolü - KULLANICI BAZLI
+ 
   const checkWeeklyLimit = (userId) => {
     const lastSpin = localStorage.getItem(`lastSpin_user_${userId}`);
     if (!lastSpin) return true;
@@ -56,7 +56,7 @@ const WheelComponent = () => {
     return diffDays >= 7; // 7 gün geçmiş mi?
   };
 
-  // Kullanıcı kuponlarını yükle - KULLANICI BAZLI
+
   const loadUserCoupons = (userId) => {
     const storedCoupons = localStorage.getItem(`userCoupons_user_${userId}`);
     if (storedCoupons) {
@@ -66,7 +66,7 @@ const WheelComponent = () => {
     }
   };
 
-  // Kupon kaydet - KULLANICI BAZLI
+ 
   const saveCoupon = (prize, userId) => {
     const newCoupon = {
       id: Date.now(),
@@ -87,7 +87,7 @@ const WheelComponent = () => {
     localStorage.setItem(`userCoupons_user_${userId}`, JSON.stringify(updatedCoupons));
   };
 
-  // Kullanıcı değiştiğinde verileri yükle
+
   useEffect(() => {
     loadUserCoupons(currentUser.id);
     const canSpin = checkWeeklyLimit(currentUser.id);
@@ -97,7 +97,7 @@ const WheelComponent = () => {
       lastSpinDate: localStorage.getItem(`lastSpin_user_${currentUser.id}`)
     }));
     
-    // Rotation'ı sıfırla (opsiyonel)
+ 
     setRotation(0);
     setShowResult(false);
     setShowDoubleGame(false);
@@ -127,7 +127,7 @@ const WheelComponent = () => {
     setTimeout(() => {
       setSpinning(false);
       
-      // Ödül seçimi - gerçekçi olasılıklar
+ 
       const random = Math.random() * 100;
       let cumulativeChance = 0;
       let selectedPrize = null;
@@ -141,12 +141,12 @@ const WheelComponent = () => {
       }
       
       if (!selectedPrize) {
-        selectedPrize = prizes[prizes.length - 1]; // Fallback
+        selectedPrize = prizes[prizes.length - 1]; 
       }
       
       setWonPrize(selectedPrize);
       
-      // Son çevirme tarihini KULLANICI BAZLI kaydet
+     
       localStorage.setItem(`lastSpin_user_${currentUser.id}`, new Date().toISOString());
       setWheelStatus(prev => ({ 
         ...prev, 
@@ -154,11 +154,11 @@ const WheelComponent = () => {
         lastSpinDate: new Date().toISOString()
       }));
       
-      // Tekrar çevir dışındaki ödüller için çift-tek oyunu sun
+   
       if (selectedPrize.type !== 'try_again') {
         setShowDoubleGame(true);
       } else {
-        // Tekrar çevir ise direkt sonuç göster ve çevirme hakkını geri ver
+    
         setWheelStatus(prev => ({ ...prev, canSpin: true }));
         setShowResult(true);
       }
@@ -166,7 +166,7 @@ const WheelComponent = () => {
   };
 
   const resetForTest = () => {
-    // Test için MEVCUT KULLANICININ son çevirme tarihini sıfırla
+ 
     localStorage.removeItem(`lastSpin_user_${currentUser.id}`);
     setWheelStatus(prev => ({ ...prev, canSpin: true }));
     setError(null);
@@ -213,7 +213,7 @@ const WheelComponent = () => {
 
   const goToCart = () => {
     closeResult();
-    // Sepete gitmeden önce kuponları göster
+  
     alert(`🎉 Tebrikler! ${userCoupons.length} adet kuponun var!\n\nKuponların:\n${userCoupons.map(c => `• ${c.title} (${c.prize_value} TL)`).join('\n')}\n\nSepet sayfasında kuponlarını kullanabilirsin!`);
   };
 
@@ -239,7 +239,7 @@ const WheelComponent = () => {
         maxWidth: '1200px',
         margin: '0 auto',
       }}>
-        {/* Header */}
+     
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -300,7 +300,7 @@ const WheelComponent = () => {
           )}
         </div>
 
-        {/* Error Display */}
+
         {error && (
           <div style={{
             background: 'rgba(231, 76, 60, 0.9)',
@@ -331,7 +331,7 @@ const WheelComponent = () => {
           </div>
         )}
 
-        {/* Kullanıcı Durumu */}
+     
         {wheelStatus && (
           <div style={{
             background: 'rgba(255,255,255,0.95)',
@@ -384,21 +384,21 @@ const WheelComponent = () => {
           </div>
         )}
 
-        {/* Ana İçerik */}
+        
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           gap: '40px'
         }}>
-          {/* Çark Container */}
+         
           <div style={{
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center'
           }}>
-            {/* Pointer */}
+      
             <div style={{
               position: 'absolute',
               top: '-20px',
@@ -409,7 +409,7 @@ const WheelComponent = () => {
               🔻
             </div>
 
-            {/* Çark SVG */}
+     
             <div style={{
               position: 'relative',
               transform: `rotate(${rotation}deg)`,
@@ -430,7 +430,7 @@ const WheelComponent = () => {
                   ))}
                 </defs>
                 
-                {/* Outer ring */}
+          
                 <circle
                   cx="200"
                   cy="200"
@@ -440,7 +440,7 @@ const WheelComponent = () => {
                   strokeWidth="8"
                 />
                 
-                {/* Inner circle */}
+        
                 <circle
                   cx="200"
                   cy="200"
@@ -448,7 +448,7 @@ const WheelComponent = () => {
                   fill="#2c3e50"
                 />
                 
-                {/* Segments */}
+        
                 {prizes.map((prize, index) => {
                   const segmentAngle = 360 / prizes.length;
                   const startAngle = (index * segmentAngle) - (segmentAngle / 2);
@@ -469,7 +469,7 @@ const WheelComponent = () => {
                     `Z`
                   ].join(' ');
 
-                  // Text position
+             
                   const textAngle = startAngle + (segmentAngle / 2);
                   const textAngleRad = (textAngle * Math.PI) / 180;
                   const textX = 200 + 120 * Math.cos(textAngleRad);
@@ -477,7 +477,7 @@ const WheelComponent = () => {
 
                   return (
                     <g key={prize.id}>
-                      {/* Segment background */}
+                
                       <path
                         d={pathData}
                         fill={`url(#gradient-${index})`}
@@ -485,7 +485,6 @@ const WheelComponent = () => {
                         strokeWidth="2"
                       />
                       
-                      {/* Icon */}
                       <text
                         x={textX}
                         y={textY - 10}
@@ -497,7 +496,7 @@ const WheelComponent = () => {
                         {prize.icon}
                       </text>
                       
-                      {/* Text */}
+                
                       <text
                         x={textX}
                         y={textY + 15}
@@ -514,8 +513,7 @@ const WheelComponent = () => {
                     </g>
                   );
                 })}
-                
-                {/* Center decorative circle */}
+          
                 <circle
                   cx="200"
                   cy="200"
@@ -525,7 +523,7 @@ const WheelComponent = () => {
               </svg>
             </div>
 
-            {/* Spin Button */}
+      
             <button
               onClick={spinWheel}
               disabled={!wheelStatus?.canSpin || spinning || prizes.length === 0}
@@ -564,7 +562,7 @@ const WheelComponent = () => {
                'Haftada Bir Kez'}
             </button>
 
-            {/* Çark Bilgileri */}
+           
             {wheelStatus && !wheelStatus.canSpin && getNextSpinDate() && (
               <div style={{
                 marginTop: '15px',
@@ -584,7 +582,7 @@ const WheelComponent = () => {
             )}
           </div>
 
-          {/* Test Butonu */}
+      
           <button
             onClick={resetForTest}
             style={{
@@ -600,7 +598,7 @@ const WheelComponent = () => {
             🔄 Test: Haftada 1 kez sınırını kaldır
           </button>
 
-          {/* Kuponlar Listesi */}
+      
           {userCoupons.length > 0 && (
             <div style={{
               background: 'rgba(255,255,255,0.95)',
@@ -669,7 +667,7 @@ const WheelComponent = () => {
             </div>
           )}
 
-          {/* Ödüller Listesi */}
+      
           {prizes.length > 0 && (
             <div style={{
               background: 'rgba(255,255,255,0.95)',
@@ -729,7 +727,7 @@ const WheelComponent = () => {
         </div>
       </div>
 
-      {/* CSS for animations */}
+  
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes spin {
           from { transform: rotate(0deg); }
@@ -750,7 +748,7 @@ const WheelComponent = () => {
         }
       `}} />
 
-      {/* Çift ya da Tek Oyunu */}
+   
       {showDoubleGame && wonPrize && (
         <div style={{
           position: 'fixed',
@@ -915,7 +913,7 @@ const WheelComponent = () => {
         </div>
       )}
 
-      {/* Sonuç Modal */}
+     
       {showResult && wonPrize && (
         <div style={{
           position: 'fixed',
@@ -1023,7 +1021,7 @@ const WheelComponent = () => {
                 <button 
                   onClick={() => {
                     closeResult();
-                    // Tekrar çevirme hakkı ver
+                
                     setWheelStatus(prev => ({ ...prev, canSpin: true }));
                   }}
                   style={{

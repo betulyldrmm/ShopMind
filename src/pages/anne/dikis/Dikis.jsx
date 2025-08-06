@@ -5,7 +5,7 @@ import './Dikis.css';
 
 const API_BASE_URL = 'http://localhost:5001';
 
-// Kategori bilgileri (UI için)
+
 const categories = {
   'dikiş-makineleri': { name: '🪡 Dikiş Makineleri', color: '#e91e63' },
   'kumaslar': { name: '🧵 Kumaşlar', color: '#673ab7' },
@@ -24,14 +24,14 @@ const Dikis = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   
-  // Yeni state'ler - veritabanı için
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Kullanıcı bilgilerini kontrol et
+   
     const userData = localStorage.getItem('user');
     if (userData) {
       try {
@@ -45,95 +45,142 @@ const Dikis = () => {
       setSelectedCategory(subcategoryId);
     }
     
-    // Sepet sayısını güncelle
+  
     updateCartCount();
     
-    // Ürünleri çek
+
     fetchDikisProducts();
   }, [subcategoryId]);
+
+  
+  const fixImageUrl = (imageUrl) => {
+    if (!imageUrl) return '/default-product.png';
+    
+
+    if (imageUrl.startsWith('http')) {
+      return imageUrl;
+    }
+    
+
+    if (imageUrl.startsWith('/images/')) {
+      const fileName = imageUrl.replace('/images/', '');
+      return `/${fileName}`;
+    }
+    
+  
+    if (imageUrl.startsWith('images/')) {
+      const fileName = imageUrl.replace('images/', '');
+      return `/${fileName}`;
+    }
+    
+
+    if (imageUrl.startsWith('/')) {
+      return imageUrl;
+    }
+    
+  
+    return `/${imageUrl}`;
+  };
 
   const fetchDikisProducts = async () => {
     try {
       setLoading(true);
       setError('');
       
-      // Kategori ID 1'den 423-451 arası ürünleri çek
-      const response = await fetch(`${API_BASE_URL}/api/categories/1/products?start_id=423&end_id=451`);
+      console.log('Dikiş ürünleri API çağrısı başlıyor...');
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Dikiş Ürünleri API Response:', data);
+     
+      const dikisProductIds = [
+        432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 
+        442, 443, 444, 445, 446, 447, 448, 449, 450
+      ];
       
       let fetchedProducts = [];
       
-      // Server'dan gelen response format kontrol et
-      if (data.success && data.data && data.data.products) {
-        fetchedProducts = data.data.products;
-      } else if (Array.isArray(data)) {
-        fetchedProducts = data;
-      } else if (data.products) {
-        fetchedProducts = data.products;
-      } else {
-        console.error('Beklenmeyen veri formatı:', data);
-        fetchedProducts = [];
-      }
-
-      // Eğer özel ID aralığı endpoint'i yoksa fallback
-      if (fetchedProducts.length === 0) {
-        console.log('ID aralığı endpoint\'i bulunamadı, fallback yapılıyor...');
-        const fallbackResponse = await fetch(`${API_BASE_URL}/api/categories/1/products`);
+      try {
+        console.log('Tüm ürünler çekiliyor...');
+        const response = await fetch(`${API_BASE_URL}/api/products`);
         
-        if (fallbackResponse.ok) {
-          const fallbackData = await fallbackResponse.json();
-          let allCategoryProducts = [];
+        if (response.ok) {
+          const data = await response.json();
+          console.log('API yanıtı:', data);
           
-          if (fallbackData.success && fallbackData.data && fallbackData.data.products) {
-            allCategoryProducts = fallbackData.data.products;
-          } else if (Array.isArray(fallbackData)) {
-            allCategoryProducts = fallbackData;
-          } else if (fallbackData.products) {
-            allCategoryProducts = fallbackData.products;
+          let allProducts = [];
+          
+        
+          if (Array.isArray(data)) {
+            allProducts = data;
+          } else if (data.data && Array.isArray(data.data)) {
+            allProducts = data.data;
+          } else if (data.products && Array.isArray(data.products)) {
+            allProducts = data.products;
+          } else if (data.success && data.data && Array.isArray(data.data)) {
+            allProducts = data.data;
+          } else {
+            console.warn('Beklenmeyen API yanıt formatı:', data);
+            allProducts = [];
           }
           
-          // ID 423-451 arasındaki ürünleri filtrele
-          fetchedProducts = allCategoryProducts.filter(product => 
-            product.id >= 423 && product.id <= 451
-          );
+          console.log('Toplam ürün sayısı:', allProducts.length);
+          console.log('Aranacak dikiş ID\'leri:', dikisProductIds.length, 'adet');
+          
+     
+          fetchedProducts = allProducts.filter(product => {
+            const productId = parseInt(product.id);
+            const isDikisProduct = dikisProductIds.includes(productId);
+            
+            if (isDikisProduct) {
+              console.log('✅ Dikiş ürünü bulundu:', product.id, '-', product.name);
+            }
+            
+            return isDikisProduct;
+          });
+          
+          console.log(`🎯 ID Filtresi Sonucu: ${fetchedProducts.length}/${dikisProductIds.length} dikiş ürünü bulundu`);
+          
+   
+          const foundIds = fetchedProducts.map(p => parseInt(p.id));
+          const missingIds = dikisProductIds.filter(id => !foundIds.includes(id));
+          if (missingIds.length > 0) {
+            console.warn('⚠️ Bulunamayan dikiş ürünü ID\'leri:', missingIds);
+          }
+          
+  
+          fetchedProducts = fetchedProducts.map(product => ({
+            ...product,
+            image_url: fixImageUrl(product.image_url)
+          }));
+          
+     
+          fetchedProducts.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+          
+          console.log('Filtrelenmiş ve sıralanmış dikiş ürünleri:', fetchedProducts.slice(0, 5).map(p => ({
+            id: p.id, 
+            name: p.name,
+            category_id: p.category_id
+          })));
+          
+        } else {
+          throw new Error(`API yanıt hatası: ${response.status}`);
         }
+        
+      } catch (apiError) {
+        console.error('API çağrısı başarısız:', apiError);
+        setError(`API bağlantı hatası: ${apiError.message}`);
       }
-
+      
       setProducts(fetchedProducts);
       
-    } catch (error) {
-      console.error('Dikiş ürünleri yüklenirken hata:', error);
-      setError(`Ürünler yüklenirken bir hata oluştu: ${error.message}`);
-      
-      // Son fallback: Tüm ürünlerden dikiş ile alakalı olanları çek
-      try {
-        console.log('Final fallback: Tüm ürünleri kontrol ediliyor...');
-        const finalResponse = await fetch(`${API_BASE_URL}/api/products`);
-        if (finalResponse.ok) {
-          const allProducts = await finalResponse.json();
-          // Dikiş ile alakalı kelimeleri içeren ürünleri filtrele
-          const dikisKeywords = ['dikiş', 'makine', 'kumaş', 'iplik', 'fermuar', 'düğme', 'nakış', 'makara', 'igne', 'makas'];
-          const relatedProducts = allProducts.filter(product => 
-            dikisKeywords.some(keyword => 
-              product.name.toLowerCase().includes(keyword) || 
-              (product.description && product.description.toLowerCase().includes(keyword))
-            )
-          ).slice(0, 30); // İlk 30 ürünü al
-          
-          if (relatedProducts.length > 0) {
-            setProducts(relatedProducts);
-            setError(''); // Hata mesajını temizle
-          }
-        }
-      } catch (finalError) {
-        console.error('Final fallback da başarısız:', finalError);
+      if (fetchedProducts.length === 0) {
+        setError('Belirtilen ID\'lerde dikiş ürünü bulunamadı. Veritabanını kontrol edin.');
+      } else {
+        console.log(`🎉 ${fetchedProducts.length} dikiş ürünü başarıyla yüklendi`);
       }
+      
+    } catch (error) {
+      console.error('fetchDikisProducts genel hatası:', error);
+      setError(`Ürünler yüklenirken hata: ${error.message}`);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -198,11 +245,11 @@ const Dikis = () => {
     }
 
     try {
-      // Mevcut sepeti al
+   
       const existingSepet = localStorage.getItem('sepet');
       let sepetItems = existingSepet ? JSON.parse(existingSepet) : [];
 
-      // Ürün formatını Sepet.jsx'e uygun hale getir
+      
       const cartItem = {
         id: `dikis-${product.id}`,
         name: product.name,
@@ -219,25 +266,25 @@ const Dikis = () => {
         description: product.description
       };
 
-      // Aynı ürün var mı kontrol et
+
       const existingItemIndex = sepetItems.findIndex(item => item.id === cartItem.id);
 
       if (existingItemIndex !== -1) {
-        // Mevcut ürünün adedini artır
+      
         sepetItems[existingItemIndex].adet = (parseInt(sepetItems[existingItemIndex].adet) || 1) + 1;
         sepetItems[existingItemIndex].quantity = sepetItems[existingItemIndex].adet;
       } else {
-        // Yeni ürün ekle
+  
         sepetItems.push(cartItem);
       }
 
-      // Sepeti localStorage'a kaydet
+    
       localStorage.setItem('sepet', JSON.stringify(sepetItems));
       
-      // Sepet sayısını güncelle
+
       updateCartCount();
 
-      // Başarı bildirimi
+
       const notification = document.createElement('div');
       notification.className = 'cart-notification';
       notification.textContent = `${product.name} sepete eklendi!`;
@@ -269,57 +316,126 @@ const Dikis = () => {
   };
 
   const handleProductClick = (product) => {
-    // Ürün detay sayfasına ID ile yönlendir
+   
     navigate(`/urun/${product.id}`);
   };
 
-  // Alt kategorilere göre ürünleri filtrele (isimlere göre basit filtreleme)
+  
   const getFilteredProducts = () => {
     if (!products || products.length === 0) return [];
     
+    console.log('Filtreleme başlıyor...', selectedCategory, 'Toplam ürün:', products.length);
+    
+    let filteredProducts = [];
+    
     switch (selectedCategory) {
       case 'dikiş-makineleri':
-        return products.filter(p => 
-          p.name.toLowerCase().includes('makine') || 
-          p.name.toLowerCase().includes('dikiş')
-        );
+        filteredProducts = products.filter(p => {
+          const name = p.name.toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return name.includes('makine') || 
+                 name.includes('dikiş') ||
+                 name.includes('dikis') ||
+                 desc.includes('makine') ||
+                 desc.includes('dikiş');
+        });
+        break;
+        
       case 'kumaslar':
-        return products.filter(p => 
-          p.name.toLowerCase().includes('kumaş') || 
-          p.name.toLowerCase().includes('bez') ||
-          p.name.toLowerCase().includes('pamuk')
-        );
+        filteredProducts = products.filter(p => {
+          const name = p.name.toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return name.includes('kumaş') || 
+                 name.includes('kumash') ||
+                 name.includes('bez') ||
+                 name.includes('pamuk') ||
+                 name.includes('iplik') ||
+                 desc.includes('kumaş') ||
+                 desc.includes('bez');
+        });
+        break;
+        
       case 'iplik-makara':
-        return products.filter(p => 
-          p.name.toLowerCase().includes('iplik') || 
-          p.name.toLowerCase().includes('makara')
-        );
+        filteredProducts = products.filter(p => {
+          const name = p.name.toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return name.includes('iplik') || 
+                 name.includes('makara') ||
+                 name.includes('makrome') ||
+                 name.includes('örgü') ||
+                 name.includes('orgu') ||
+                 desc.includes('iplik') ||
+                 desc.includes('makara');
+        });
+        break;
+        
       case 'dikiş-aletleri':
-        return products.filter(p => 
-          p.name.toLowerCase().includes('makas') || 
-          p.name.toLowerCase().includes('igne') ||
-          p.name.toLowerCase().includes('cetvel')
-        );
+        filteredProducts = products.filter(p => {
+          const name = p.name.toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return name.includes('makas') || 
+                 name.includes('iğne') ||
+                 name.includes('igne') ||
+                 name.includes('cetvel') ||
+                 name.includes('ölçü') ||
+                 name.includes('olcu') ||
+                 name.includes('kesim') ||
+                 desc.includes('makas') ||
+                 desc.includes('kesim');
+        });
+        break;
+        
       case 'fermuar-dugme':
-        return products.filter(p => 
-          p.name.toLowerCase().includes('fermuar') || 
-          p.name.toLowerCase().includes('düğme') ||
-          p.name.toLowerCase().includes('dugme')
-        );
+        filteredProducts = products.filter(p => {
+          const name = p.name.toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return name.includes('fermuar') || 
+                 name.includes('düğme') ||
+                 name.includes('dugme') ||
+                 name.includes('düğmeler') ||
+                 name.includes('dugmeler') ||
+                 name.includes('metal') ||
+                 name.includes('plastik') ||
+                 desc.includes('fermuar') ||
+                 desc.includes('düğme');
+        });
+        break;
+        
       case 'nakis-malzemeleri':
-        return products.filter(p => 
-          p.name.toLowerCase().includes('nakış') || 
-          p.name.toLowerCase().includes('kasak')
-        );
+        filteredProducts = products.filter(p => {
+          const name = p.name.toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return name.includes('nakış') || 
+                 name.includes('nakis') ||
+                 name.includes('kasak') ||
+                 name.includes('süsleme') ||
+                 name.includes('susleme') ||
+                 name.includes('dekoratif') ||
+                 desc.includes('nakış') ||
+                 desc.includes('süsleme');
+        });
+        break;
+        
       default:
-        return products.slice(0, 10); // Varsayılan olarak ilk 10 ürünü göster
+     
+        filteredProducts = products;
     }
+    
+    console.log(`${selectedCategory} kategorisi için ${filteredProducts.length} ürün bulundu`);
+    
+ 
+    if (filteredProducts.length === 0) {
+      console.log('Spesifik filtre boş, tüm dikiş ürünlerini gösteriyor');
+      filteredProducts = products.slice(0, 15);
+    }
+    
+    return filteredProducts;
   };
 
   const currentProducts = getFilteredProducts();
   const currentCategoryInfo = categories[selectedCategory] || categories['dikiş-makineleri'];
 
-  // Loading state
+
   if (loading) {
     return (
       <div className="pasta-gallery-wrapper">
@@ -331,7 +447,7 @@ const Dikis = () => {
     );
   }
 
-  // Error state
+ 
   if (error && products.length === 0) {
     return (
       <div className="pasta-gallery-wrapper">
@@ -342,8 +458,8 @@ const Dikis = () => {
             <p>🔍 Kontrol edilecekler:</p>
             <ul>
               <li>Server çalışıyor mu? (http://localhost:5001)</li>
-              <li>Kategori ID 1 veritabanında var mı?</li>
-              <li>ID 423-451 arası ürünler var mı?</li>
+              <li>Dikiş ürün ID'leri (432-450) veritabanında var mı?</li>
+              <li>API endpoint'i doğru çalışıyor mu?</li>
             </ul>
           </div>
           <button onClick={fetchDikisProducts} className="retry-btn">
@@ -358,7 +474,7 @@ const Dikis = () => {
     <div className="pasta-gallery-wrapper">
       <h2 className="gallery-title">🪡 Anne için Dikiş Malzemeleri Hediye Önerileri</h2>
       
-      {/* Navigation */}
+   
       <div className="navigation-section">
         <button
           onClick={() => navigate('/')}
@@ -375,7 +491,7 @@ const Dikis = () => {
         </button>
       </div>
       
-      {/* Kategori Seçim Butonları */}
+     
       <div className="category-buttons">
         {Object.keys(categories).map(categoryKey => (
           <button
@@ -394,31 +510,34 @@ const Dikis = () => {
         ))}
       </div>
 
-      {/* Breadcrumb */}
+   
       <div className="breadcrumb">
         Anne → Dikiş Malzemeleri → <span style={{ color: currentCategoryInfo.color, fontWeight: 'bold' }}>
           {currentCategoryInfo.name}
         </span>
       </div>
 
-      {/* Kategori Başlığı */}
+ 
       <div className="category-header" style={{ color: currentCategoryInfo.color }}>
         {currentCategoryInfo.name} - {currentProducts.length} Ürün
         {user && <span className="user-welcome"> | Hoş geldin, <strong>{user.username}</strong>!</span>}
       </div>
 
-      {/* Ürün Yoksa Mesaj */}
+     
+      
+      
       {currentProducts.length === 0 ? (
         <div className="no-products">
           <div className="no-products-icon">🪡</div>
           <h3>Bu kategoride henüz ürün bulunmuyor</h3>
+          <p>Toplam {products.length} dikiş ürünü veritabanında mevcut ama "{currentCategoryInfo.name}" kategorisinde ürün bulunamadı.</p>
           <p>Diğer kategorileri kontrol edebilir veya daha sonra tekrar bakabilirsiniz.</p>
           <button onClick={fetchDikisProducts} className="refresh-btn">
             🔄 Ürünleri Yenile
           </button>
         </div>
       ) : (
-        /* Ürün Grid'i */
+     
         <div className="products-grid">
           {currentProducts.map((product) => (
             <div key={product.id} className="product-card clickable-card" data-product-index={product.id}>
@@ -430,17 +549,17 @@ const Dikis = () => {
                 )}
                 
                 <img
-                  src={product.image_url || '/images/default-product.png'}
+                  src={product.image_url || '/default-product.png'}
                   alt={product.name}
                   className="product-image"
                   loading="lazy"
                   style={{ cursor: 'pointer' }}
                   onError={(e) => {
-                    e.currentTarget.src = '/images/default-product.png';
+                    console.log('Resim yükleme hatası:', e.target.src);
+                    e.currentTarget.src = '/default-product.png';
                   }}
                 />
                 
-                {/* Favori Butonu */}
                 <button
                   className={`favorite-btn ${favorites.has(product.id) ? 'active' : ''}`}
                   onClick={(e) => {
@@ -503,14 +622,8 @@ const Dikis = () => {
         </div>
       )}
 
-      {/* Performans Bilgisi */}
-      <div className="performance-info">
-        ⚡ Performans: Veritabanından {products.length} ürün yüklendi (Kategori ID: 1, Ürün ID: 423-451)
-        <br />
-        📊 Filtrelenmiş: {currentProducts.length} ürün "{currentCategoryInfo.name}" kategorisinde gösteriliyor
-      </div>
-
-      {/* Ürün Detay Modal */}
+     
+      
       {isModalOpen && selectedProduct && (
         <div className="modal-overlay" onClick={closeProductDetail}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -519,11 +632,11 @@ const Dikis = () => {
             <div className="modal-body">
               <div className="modal-image-section">
                 <img
-                  src={selectedProduct.image_url || '/images/default-product.png'}
+                  src={selectedProduct.image_url || '/default-product.png'}
                   alt={selectedProduct.name}
                   className="modal-image"
                   onError={(e) => {
-                    e.currentTarget.src = '/images/default-product.png';
+                    e.currentTarget.src = '/default-product.png';
                   }}
                 />
               </div>

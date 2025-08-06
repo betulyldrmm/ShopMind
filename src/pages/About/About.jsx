@@ -6,7 +6,7 @@ function About() {
   return (
     <div className="page-container">
       <div className="content-wrapper">
-        {/* Header Bölümü */}
+       
         <div className="page-header">
           <h1 className="page-title">Hakkımızda</h1>
           <p className="page-subtitle">
@@ -14,9 +14,9 @@ function About() {
           </p>
         </div>
 
-        {/* Ana İçerik */}
+       
         <div className="page-content">
-          {/* Biz Kimiz Bölümü */}
+       
           <div className="content-section">
             <h2 className="section-title">Biz Kimiz?</h2>
             <p className="section-text">
@@ -35,7 +35,7 @@ function About() {
             </p>
           </div>
 
-          {/* Özelliklerimiz */}
+         
           <div className="content-section">
             <h2 className="section-title">Neden Bizi Tercih Etmelisiniz?</h2>
             <div className="features-grid">
@@ -95,7 +95,7 @@ function About() {
             </div>
           </div>
 
-          {/* İstatistikler */}
+        
           <div className="content-section">
             <h2 className="section-title">Rakamlarla Biz</h2>
             <div className="stats-grid">
@@ -118,7 +118,7 @@ function About() {
             </div>
           </div>
 
-          {/* Misyonumuz */}
+
           <div className="content-section">
             <h2 className="section-title">Misyonumuz</h2>
             <p className="section-text">
@@ -129,7 +129,7 @@ function About() {
             </p>
           </div>
 
-          {/* Vizyonumuz */}
+     
           <div className="content-section">
             <h2 className="section-title">Vizyonumuz</h2>
             <p className="section-text">
@@ -141,7 +141,7 @@ function About() {
           </div>
         </div>
 
-        {/* CTA Bölümü */}
+
         <div className="cta-section">
           <h2 className="cta-title">Hediye Arayışınıza Başlayın</h2>
           <p className="cta-text">

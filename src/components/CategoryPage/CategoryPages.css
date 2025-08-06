@@ -1,4 +1,4 @@
-/* CategoryPage.css */
+
 .category-page-container {
   max-width: 1650px;
   margin: 0 auto;
@@ -6,7 +6,7 @@
   font-family: 'Arial', sans-serif;
 }
 
-/* Breadcrumb */
+
 .breadcrumb {
   margin-bottom: 20px;
   font-size: 14px;
@@ -26,7 +26,6 @@
   margin: 0 5px;
 }
 
-/* Kategori Header */
 .category-header {
   display: flex;
   justify-content: space-between;

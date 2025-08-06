@@ -43,7 +43,6 @@ const KendineHediye = () => {
     try {
       setLoading(true);
       
-      // Mevcut server endpoint'ini kullan: /api/categories/:id/products
       const response = await fetch(`${API_BASE_URL}/api/categories/16/products`);
       
       if (!response.ok) {
@@ -53,15 +52,15 @@ const KendineHediye = () => {
       const data = await response.json();
       console.log('API Response:', data);
       
-      // Server'dan gelen response format kontrol et
+    
       if (data.success && data.data && data.data.products) {
-        // Yeni format: { success: true, data: { category: {...}, products: [...] } }
+   
         setProducts(data.data.products);
       } else if (Array.isArray(data)) {
-        // Eski format: direkt array
+   
         setProducts(data);
       } else if (data.products) {
-        // Başka bir format: { products: [...] }
+    
         setProducts(data.products);
       } else {
         console.error('Beklenmeyen veri formatı:', data);
@@ -72,22 +71,22 @@ const KendineHediye = () => {
       console.error('Ürünler yüklenirken hata:', error);
       setError(`Ürünler yüklenirken bir hata oluştu: ${error.message}`);
       
-      // Fallback: Eğer kategori 16 yoksa, tüm ürünleri çek ve filtrele
+   
       console.log('Fallback: Tüm ürünleri çekmeye çalışıyorum...');
       try {
         const fallbackResponse = await fetch(`${API_BASE_URL}/api/products`);
         if (fallbackResponse.ok) {
           const allProducts = await fallbackResponse.json();
-          // Kategori ID 16 olan ürünleri filtrele, yoksa rastgele bir kısmını al
+     
           const category16Products = allProducts.filter(p => p.category_id === 16);
           if (category16Products.length > 0) {
             setProducts(category16Products);
-            setError(''); // Hata mesajını temizle
+            setError(''); 
           } else {
-            // Eğer kategori 16 ürünü yoksa, rastgele ürünleri "Kendine Hediye" olarak göster
+          
             const randomProducts = allProducts.slice(0, 12);
             setProducts(randomProducts);
-            setError(''); // Hata mesajını temizle
+            setError(''); 
           }
         }
       } catch (fallbackError) {
@@ -99,12 +98,12 @@ const KendineHediye = () => {
   };
 
   const handleProductClick = (product) => {
-    // Ürün detay sayfasına ID ile yönlendir - URL'de ID görünecek
+
     navigate(`/urun/${product.id}`);
   };
 
   const addToCart = (product, event) => {
-    // Event bubbling'i durdur (kart tıklamasını engellemek için)
+   
     event.stopPropagation();
 
     if (!user) {
@@ -128,7 +127,7 @@ const KendineHediye = () => {
     setCart(newCart);
     localStorage.setItem('sepet', JSON.stringify(newCart));
     
-    // Başarı mesajı
+  
     const notification = document.createElement('div');
     notification.className = 'cart-notification';
     notification.textContent = `${product.name} sepete eklendi!`;
@@ -363,7 +362,7 @@ const KendineHediye = () => {
                       </button>
                     </div>
 
-                    {/* Debug info - geliştirme aşamasında */}
+                   
                     
                   </div>
                 </div>
@@ -372,23 +371,8 @@ const KendineHediye = () => {
           )}
         </div>
 
-        {/* Cart Summary */}
-        {cart.length > 0 && (
-          <div className="cart-summary">
-            <div className="cart-info">
-              <span>🛒 Sepette {cart.length} ürün</span>
-              <span>
-                Toplam: ₺{cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}
-              </span>
-            </div>
-            <button 
-              onClick={() => navigate('/sepet')}
-              className="go-to-cart-btn"
-            >
-              Sepete Git →
-            </button>
-          </div>
-        )}
+       
+       
       </div>
     </>
   );

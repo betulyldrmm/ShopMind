@@ -1,4 +1,4 @@
-/* Genel yerleşim */
+
 .heade {
   display: flex;
   flex-direction: row;
@@ -23,14 +23,14 @@
 
 .action-buttons {
   display: flex;
-  flex-direction: row; /* Yan yana sıralama için */
+  flex-direction: row; 
   gap: 20px;
-  flex-wrap: nowrap; /* Alt satıra geçmeyi önler */
+  flex-wrap: nowrap; 
   align-items: center;
   justify-content: center;
 }
 
-/* Tüm butonlar ortak stil */
+
 .action-button {
   display: flex;
   align-items: center;
@@ -50,7 +50,7 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-transform: uppercase;
   flex-direction: row;
-  white-space: nowrap; /* Metinlerin sarılmasını önler */
+  white-space: nowrap; 
   height: 60px;
 }
 
@@ -81,18 +81,18 @@
   background: linear-gradient(135deg, #15803d, #16a34a);
 }
 
-/* Dönen ikon sadece çarkta */
+
 .spin-icon {
   animation: spin-icon 3s linear infinite;
 }
 
-/* İkon dönme animasyonu */
+
 @keyframes spin-icon {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .header-container {
     width: 100%;
@@ -112,7 +112,7 @@
   }
 }
 
-/* Küçük ekranlar için ek responsive ayarlar */
+
 @media (max-width: 1050px) {
   .header-container {
     width: 95%;

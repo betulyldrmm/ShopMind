@@ -1,8 +1,7 @@
-// brand.jsx
+
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import './Brand.css'; // CSS dosyasını import edin
-
+import './Brand.css'; 
 const Brand = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   

@@ -1,4 +1,4 @@
-/* Wheel Container */
+
 .wheel-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -6,7 +6,6 @@
   font-family: 'Arial', sans-serif;
 }
 
-/* Header güncellemeleri */
 .wheel-header h1 {
   display: flex;
   align-items: center;

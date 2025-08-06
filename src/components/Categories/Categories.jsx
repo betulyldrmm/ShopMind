@@ -1,6 +1,3 @@
-// ===============================================
-// 2. components/Categories/Categories.jsx - SADECE GERÇEK VERİ
-// ===============================================
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +15,6 @@ import {
   FaAppleAlt,
 } from 'react-icons/fa';
 
-// İkon map'i - veritabanından gelen icon isimlerini React iconlarına çevirmek için
 const iconMap = {
   'FaTshirt': <FaTshirt />,
   'FaMobileAlt': <FaMobileAlt />,
@@ -39,7 +35,6 @@ function Categories() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Kategorileri API'den çek
   useEffect(() => {
     const fetchCategories = async () => {
       console.log('🔍 API çağrısı başlıyor...');
@@ -55,7 +50,7 @@ function Categories() {
         const data = await response.json();
         console.log('📦 API\'den gelen data:', data);
         
-        // Eğer data.success varsa onu kullan, yoksa direkt data'yı kullan
+      
         if (data.success && Array.isArray(data.data)) {
           console.log('✅ Kategoriler başarıyla alındı:', data.data);
           setCategories(data.data);
@@ -86,23 +81,22 @@ function Categories() {
   console.log('🎯 Current state - loading:', loading);
   console.log('🎯 Current state - error:', error);
 
-  // Ana kategoriye tıklama
+
   const handleCategoryClick = (categorySlug) => {
     console.log('🖱️ Kategori tıklandı:', categorySlug);
     navigate(`/kategori/${categorySlug}`);
   };
 
-  // Alt kategoriye tıklama (şu an için sadece ana kategori)
   const handleSubCategoryClick = (categorySlug, subCategorySlug, e) => {
     e.stopPropagation();
     navigate(`/kategori/${categorySlug}/${subCategorySlug}`);
   };
 
-  // Tekrar dene butonu
+
   const handleRetry = () => {
     setLoading(true);
     setError(null);
-    // useEffect tekrar çalışacak
+   
     window.location.reload();
   };
 
@@ -158,7 +152,7 @@ function Categories() {
                   <span className="category-name">{cat.name}</span>
                 </div>
               </div>
-              {/* Alt kategoriler için hover dropdown burada olacak */}
+             
             </li>
           );
         })}

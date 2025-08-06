@@ -26,14 +26,12 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState('newest');
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [showFilters, setShowFilters] = useState(false);
-  
-  // HobiEdin'den eklenen state'ler
+
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
 
-  // Kullanıcı ve sepet verilerini yükle
   useEffect(() => {
-    // Kullanıcı bilgilerini kontrol et
+  
     const userData = localStorage.getItem('user');
     if (userData) {
       try {
@@ -42,8 +40,6 @@ const CategoryPage = () => {
         console.error('Kullanıcı verisi okunamadı:', error);
       }
     }
-
-    // Sepet verilerini yükle - UrunDetay formatında
     const cartData = localStorage.getItem('sepet');
     if (cartData) {
       try {
@@ -57,20 +53,19 @@ const CategoryPage = () => {
     }
   }, []);
 
-  // Ürünleri kategoriye göre çek - DÜZELTİLMİŞ VERSİYON
 useEffect(() => {
   const fetchCategoryData = async () => {
     try {
       setLoading(true);
       
       if (subCategorySlug) {
-        // Alt kategori henüz desteklenmiyor
+   
         setError('Alt kategori sistemi henüz aktif değil');
         setLoading(false);
         return;
       }
       
-      // Ana kategori sayfası - slug ile API çağrısı
+
       const apiUrl = `http://localhost:5001/api/categories/${categorySlug}/products?sortBy=${sortBy}&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}`;
       
       console.log('API çağrısı yapılıyor:', apiUrl);
@@ -108,9 +103,9 @@ useEffect(() => {
   }
 }, [categorySlug, subCategorySlug, sortBy, priceRange]);
 
-  // HobiEdin'den eklenen sepete ekleme fonksiyonu
+
   const addToCart = (product, event) => {
-    // Event bubbling'i durdur (kart tıklamasını engellemek için)
+   
     event.stopPropagation();
     event.preventDefault();
 
@@ -125,20 +120,20 @@ useEffect(() => {
     }
 
     try {
-      // Mevcut sepeti al
+
       const currentCart = JSON.parse(localStorage.getItem('sepet')) || [];
       console.log('Mevcut sepet:', currentCart);
       
-      // Aynı ürün sepette var mı kontrol et
+   
       const existingItemIndex = currentCart.findIndex(item => 
         item.id === product.id
       );
       
       if (existingItemIndex !== -1) {
-        // Ürün zaten sepette varsa, adetini artır
+  
         const newQuantity = currentCart[existingItemIndex].adet + 1;
         
-        // Stok kontrolü
+      
         if (newQuantity > product.stock) {
           alert(`Maksimum ${product.stock} adet ekleyebilirsiniz. Sepetteki mevcut adet: ${currentCart[existingItemIndex].adet}`);
           currentCart[existingItemIndex].adet = product.stock;
@@ -148,11 +143,11 @@ useEffect(() => {
         console.log('Mevcut ürün güncellendi:', currentCart[existingItemIndex]);
         
       } else {
-        // Yeni ürün olarak sepete ekle - UrunDetay formatında
+    
         const sepetItem = {
           id: product.id,
           name: product.name,
-          price: parseFloat(product.price), // Number olarak kaydet
+          price: parseFloat(product.price), 
           adet: 1,
           image_url: product.image_url,
           category_name: product.category_name,
@@ -163,14 +158,14 @@ useEffect(() => {
         console.log('Yeni ürün sepete eklendi:', sepetItem);
       }
       
-      // Güncellenmiş sepeti localStorage'a kaydet
+
       localStorage.setItem('sepet', JSON.stringify(currentCart));
       console.log('Sepet localStorage\'a kaydedildi:', currentCart);
       
-      // State'i güncelle
+   
       setCart(currentCart);
       
-      // Başarı mesajı
+ 
       const notification = document.createElement('div');
       notification.className = 'cart-notification';
       notification.textContent = `${product.name} sepete eklendi!`;
@@ -207,13 +202,13 @@ useEffect(() => {
     }
   };
 
-  // Favorileri kontrol et
+
   const isFavorite = (productId) => {
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     return favorites.includes(productId);
   };
 
-  // Favorilere ekle/çıkar
+
   const toggleFavorite = (productId, e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -228,10 +223,10 @@ useEffect(() => {
     }
     
     localStorage.setItem('favorites', JSON.stringify(newFavorites));
-    setProducts(prev => [...prev]); // Re-render için
+    setProducts(prev => [...prev]); 
   };
 
-  // Resim URL'sini düzenle
+
   const getImageUrl = (imageUrl) => {
     if (!imageUrl) return '/spor.jpg';
     
@@ -291,7 +286,6 @@ useEffect(() => {
     );
   }
 
-  // Sayfa başlığı ve açıklaması
   const pageTitle = subCategorySlug 
     ? categoryData.categoryInfo?.subcategory_name || 'Alt Kategori'
     : categoryData.category?.name || 'Kategori';
@@ -304,7 +298,7 @@ useEffect(() => {
     <>
       <Header2 />
       <div className="category-page-container">
-        {/* Breadcrumb */}
+     
         <nav className="breadcrumb">
           <Link to="/">Ana Sayfa</Link>
           <span> / </span>
@@ -319,7 +313,6 @@ useEffect(() => {
           )}
         </nav>
 
-        {/* Kategori Header */}
         <div className="category-header">
           <div className="category-title">
             <h1>{pageTitle}</h1>
@@ -330,7 +323,6 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Alt Kategoriler - Sadece ana kategori sayfasında göster */}
         {!subCategorySlug && categoryData.subCategories && categoryData.subCategories.length > 0 && (
           <div className="subcategories-section">
            
@@ -341,7 +333,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Filtreler ve Sıralama */}
+   
         <div className="filters-section">
           <div className="filters-top">
             <button 
@@ -382,7 +374,7 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Filtre Paneli */}
+       
           {showFilters && (
             <div className="filters-panel">
               <div className="filter-group">
@@ -402,7 +394,7 @@ useEffect(() => {
           )}
         </div>
 
-        {/* Ürünler Grid/List */}
+     
         <div className={`productss-section ${viewMode}`}>
           {products.length === 0 ? (
             <div className="no-productss">
@@ -485,7 +477,6 @@ useEffect(() => {
           )}
         </div>
 
-        {/* Cart Summary - HobiEdin'den eklendi */}
         {cart.length > 0 && (
           <div className="cart-summary">
             <div className="cart-info">
@@ -507,7 +498,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Geri Dön */}
+  
         <div className="back-button-container">
           <button 
             className="geri-don-btn"

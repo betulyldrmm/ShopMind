@@ -10,10 +10,10 @@ function PopularProducts() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // İlk 10 ürünü göster (2 satır x 5 sütun)
+
   const displayLimit = 10;
 
-  // Ürün adına göre resim belirleme fonksiyonu
+
   const getProductImage = (product) => {
     if (product.image_url && !product.image_url.includes('via.placeholder.com')) {
       return product.image_url;
@@ -32,7 +32,6 @@ function PopularProducts() {
     return '/images/default-product.jpg';
   };
 
-  // Resim hata durumunda çalışacak fonksiyon
   const handleImageError = (e, product) => {
     const img = e.target;
     const productName = product.name?.toLowerCase();
@@ -52,12 +51,12 @@ function PopularProducts() {
         img.src = '/images/default-product.jpg';
       }
     } else {
-      // Son çare olarak rastgele placeholder
+
       img.src = `https://picsum.photos/400/400?random=${product.id}`;
     }
   };
 
-  // Backend'den popüler ürünleri çek
+  
   useEffect(() => {
     const fetchPopularProducts = async () => {
       try {
@@ -70,20 +69,19 @@ function PopularProducts() {
         
         const data = await response.json();
         console.log('Popüler ürünler:', data);
-        // İlk 10 ürünü al
+    
         setPopularProducts(data.slice(0, displayLimit));
         setError(null);
       } catch (error) {
         console.error('Popüler ürünler alınamadı:', error);
         setError(error.message);
-        // Hata durumunda normal ürünleri göster
+     
         fetchAllProducts();
       } finally {
         setLoading(false);
       }
     };
 
-    // Eğer popüler ürün yoksa tüm ürünleri göster
     const fetchAllProducts = async () => {
       try {
         const response = await fetch('http://localhost:5001/api/products');
@@ -109,16 +107,16 @@ function PopularProducts() {
     }
     setFavorites(newFavorites);
     
-    // LocalStorage'a kaydet (opsiyonel)
+    
     localStorage.setItem('favorites', JSON.stringify([...newFavorites]));
   };
 
-  // Sepete ekle - Auth sayfasına yönlendir
+
   const addToCart = (product, e) => {
-    e.preventDefault(); // Link'in çalışmasını engelle
+    e.preventDefault(); 
     e.stopPropagation(); // Event bubbling'i durdur
     
-    // Auth sayfasına yönlendir
+ 
     navigate('/authForm', { 
       state: { 
         message: `${product.name} ürününü satın almak için giriş yapmalısınız.`,
@@ -127,7 +125,7 @@ function PopularProducts() {
     });
   };
 
-  // Favorileri localStorage'dan yükle
+
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favorites');
     if (savedFavorites) {
@@ -177,14 +175,13 @@ function PopularProducts() {
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <div className="product-display-card">
-                {/* Özel etiketler */}
+               
                 {product.rank <= 3 && (
                   <div className="product-label-tag bestseller-label-tag">
                     En Popüler #{product.rank}
                   </div>
                 )}
                 
-                {/* İndirim etiketi */}
                 {product.discount > 0 && (
                   <div className="product-label-tag discount-label-tag">
                     %{product.discount} İndirim
@@ -214,12 +211,12 @@ function PopularProducts() {
                 <div className="product-details-info">
                   <h3 className="product-name-title">{product.name}</h3>
                   
-                  {/* Kategori bilgisi */}
+                
                   {product.category_name && (
                     <p className="product-category-text">{product.category_name}</p>
                   )}
                   
-                  {/* Açıklama (kısa) */}
+              
                   {product.description && (
                     <p className="product-description-text">
                       {product.description.length > 60 
@@ -228,13 +225,12 @@ function PopularProducts() {
                       }
                     </p>
                   )}
-                  
-                  {/* Rating (şimdilik sabit değerler, sonra dinamik yapılabilir) */}
+        
                   
                    
 
                   <div className="price-display-container">
-                    {/* İndirimli fiyat hesaplaması */}
+                  
                     {product.discount > 0 && (
                       <span className="original-old-price">
                         {(product.price / (1 - product.discount / 100)).toFixed(2)} TL
@@ -243,7 +239,7 @@ function PopularProducts() {
                     <span className="current-new-price">{product.price} TL</span>
                   </div>
 
-                  {/* Stok durumu */}
+                 
                   <div className="stock-status-info">
                     {product.stock > 0 ? (
                       <span className="in-stock-available">

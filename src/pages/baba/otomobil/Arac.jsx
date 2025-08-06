@@ -5,20 +5,20 @@ import './Arac.css';
 
 const API_BASE_URL = 'http://localhost:5001';
 
-// Kategori bilgileri (UI için)
+// Araç kategorileri (UI için)
 const categories = {
-  'pasta-tatli': { name: '🍰 Pasta & Tatlı', color: '#ff6b9d' },
-  'dunya-mutfagi': { name: '🌍 Dünya Mutfağı', color: '#4ecdc4' },
-  'kahvalti': { name: '☕ Kahvaltı', color: '#ffa726' },
-  'mutfak-esyalari': { name: '🍳 Mutfak Eşyaları', color: '#66bb6a' },
-  'saglikli-yemek': { name: '💪 Sağlıklı Yemek', color: '#ab47bc' },
-  'baharat-konserve': { name: '🧂 Baharat & Konserve', color: '#8d6e63' }
+  'motor-yagi': { name: '🛢️ Motor Yağı', color: '#ff6b9d' },
+  'arac-aksesuar': { name: '🚗 Araç Aksesuar', color: '#4ecdc4' },
+  'lastik-jant': { name: '🛞 Lastik & Jant', color: '#ffa726' },
+  'arac-temizlik': { name: '🧽 Araç Temizlik', color: '#66bb6a' },
+  'elektronik-sistem': { name: '🔌 Elektronik Sistem', color: '#ab47bc' },
+  'yedek-parca': { name: '🔧 Yedek Parça', color: '#8d6e63' }
 };
 
 const Arac = () => {
   const { subcategoryId } = useParams();
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState(subcategoryId || 'pasta-tatli');
+  const [selectedCategory, setSelectedCategory] = useState(subcategoryId || 'motor-yagi');
   const [favorites, setFavorites] = useState(new Set());
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,7 +49,7 @@ const Arac = () => {
     updateCartCount();
     
     // Ürünleri çek
-    fetchYemekProducts();
+    fetchAracProducts();
   }, [subcategoryId]);
 
   // Resim URL'sini düzelt
@@ -82,23 +82,18 @@ const Arac = () => {
     return `/${imageUrl}`;
   };
 
-  // fetchYemekProducts fonksiyonunu güncelleyelim
-  const fetchYemekProducts = async () => {
+  // fetchAracProducts fonksiyonunu güncelleyelim - Kategori ID 7
+  const fetchAracProducts = async () => {
     try {
       setLoading(true);
       setError('');
       
-      console.log('API çağrısı başlıyor...');
-      
-      // Mutfak ürünlerinin KESIN ID listesi
-      const kitchenProductIds = [
-        61,62,63,64,65
-      ];
+      console.log('Araç ürünleri API çağrısı başlıyor...');
       
       let fetchedProducts = [];
       
       try {
-        console.log('Tüm ürünler çekiliyor...');
+        console.log('Kategori 7 ürünleri çekiliyor...');
         const response = await fetch(`${API_BASE_URL}/api/products`);
         
         if (response.ok) {
@@ -122,28 +117,20 @@ const Arac = () => {
           }
           
           console.log('Toplam ürün sayısı:', allProducts.length);
-          console.log('Aranacak mutfak ID\'leri:', kitchenProductIds.length, 'adet');
           
-          // SADECE BELİRLİ ID'LERİ FİLTRELE - EN KEİN YÖNTEM
+          // SADECE KATEGORİ ID'Sİ 7 OLAN ÜRÜNLERİ FİLTRELE
           fetchedProducts = allProducts.filter(product => {
-            const productId = parseInt(product.id);
-            const isKitchenProduct = kitchenProductIds.includes(productId);
+            const categoryId = parseInt(product.category_id);
+            const isCategory7 = categoryId === 7;
             
-            if (isKitchenProduct) {
-              console.log('✅ Mutfak ürünü bulundu:', product.id, '-', product.name);
+            if (isCategory7) {
+              console.log('✅ Kategori 7 ürünü bulundu:', product.id, '-', product.name);
             }
             
-            return isKitchenProduct;
+            return isCategory7;
           });
           
-          console.log(`🎯 ID Filtresi Sonucu: ${fetchedProducts.length}/${kitchenProductIds.length} mutfak ürünü bulundu`);
-          
-          // Bulunamayan ID'leri kontrol et
-          const foundIds = fetchedProducts.map(p => parseInt(p.id));
-          const missingIds = kitchenProductIds.filter(id => !foundIds.includes(id));
-          if (missingIds.length > 0) {
-            console.warn('⚠️ Bulunamayan mutfak ürünü ID\'leri:', missingIds.slice(0, 10));
-          }
+          console.log(`🎯 Kategori Filtresi Sonucu: ${fetchedProducts.length} araç ürünü bulundu`);
           
           // Resim URL'lerini düzelt
           fetchedProducts = fetchedProducts.map(product => ({
@@ -151,22 +138,10 @@ const Arac = () => {
             image_url: fixImageUrl(product.image_url)
           }));
           
-          // Kategoriye göre sırala (önce pasta/tatlı, sonra diğerleri)
-          fetchedProducts.sort((a, b) => {
-            const aId = parseInt(a.id);
-            const bId = parseInt(b.id);
-            
-            // 306-320 arası pasta/tatlı ürünleri önce gelsin
-            const aIsPasta = aId >= 306 && aId <= 320;
-            const bIsPasta = bId >= 306 && bId <= 320;
-            
-            if (aIsPasta && !bIsPasta) return -1;
-            if (!aIsPasta && bIsPasta) return 1;
-            
-            return aId - bId; // ID'ye göre sırala
-          });
+          // ID'ye göre sırala
+          fetchedProducts.sort((a, b) => parseInt(a.id) - parseInt(b.id));
           
-          console.log('Filtrelenmiş ve sıralanmış mutfak ürünleri:', fetchedProducts.slice(0, 5).map(p => ({
+          console.log('Filtrelenmiş ve sıralanmış araç ürünleri:', fetchedProducts.slice(0, 5).map(p => ({
             id: p.id, 
             name: p.name,
             category_id: p.category_id
@@ -184,13 +159,13 @@ const Arac = () => {
       setProducts(fetchedProducts);
       
       if (fetchedProducts.length === 0) {
-        setError('Belirtilen ID\'lerde mutfak ürünü bulunamadı. Veritabanını kontrol edin.');
+        setError('Kategori 7\'de araç ürünü bulunamadı. Veritabanını kontrol edin.');
       } else {
-        console.log(`🎉 ${fetchedProducts.length} mutfak ürünü başarıyla yüklendi`);
+        console.log(`🎉 ${fetchedProducts.length} araç ürünü başarıyla yüklendi`);
       }
       
     } catch (error) {
-      console.error('fetchYemekProducts genel hatası:', error);
+      console.error('fetchAracProducts genel hatası:', error);
       setError(`Ürünler yüklenirken hata: ${error.message}`);
       setProducts([]);
     } finally {
@@ -219,7 +194,7 @@ const Arac = () => {
 
   const handleCategoryChange = (categoryKey) => {
     setSelectedCategory(categoryKey);
-    window.history.pushState({}, '', `/anne/yemek-yapmak/${categoryKey}`);
+    window.history.pushState({}, '', `/arac/${categoryKey}`);
   };
 
   const toggleFavorite = (productId) => {
@@ -264,12 +239,12 @@ const Arac = () => {
 
       // Ürün formatını Sepet.jsx'e uygun hale getir
       const cartItem = {
-        id: `yemek-yapmak-${product.id}`,
+        id: `arac-${product.id}`,
         name: product.name,
         price: product.discount > 0 ? (product.price * (1 - product.discount / 100)) : product.price,
         originalPrice: product.price,
         image_url: product.image_url,
-        category_name: 'Yemek Yapmak',
+        category_name: 'Araç Ürünleri',
         category: selectedCategory,
         adet: 1,
         quantity: 1,
@@ -333,7 +308,7 @@ const Arac = () => {
     navigate(`/urun/${product.id}`);
   };
 
-  // GENİŞLETİLMİŞ FİLTRELEME - Daha akıllı ve kapsamlı
+  // GENİŞLETİLMİŞ FİLTRELEME - Araç ürünleri için
   const getFilteredProducts = () => {
     if (!products || products.length === 0) return [];
     
@@ -342,123 +317,107 @@ const Arac = () => {
     let filteredProducts = [];
     
     switch (selectedCategory) {
-      case 'pasta-tatli':
+      case 'motor-yagi':
         filteredProducts = products.filter(p => {
           const name = p.name.toLowerCase();
           const desc = (p.description || '').toLowerCase();
-          return name.includes('pasta') || 
-                 name.includes('tatlı') ||
-                 name.includes('tatli') ||
-                 name.includes('kek') ||
-                 name.includes('şeker') ||
-                 name.includes('seker') ||
-                 name.includes('krema') ||
-                 name.includes('hamur') ||
-                 name.includes('süsleme') ||
-                 name.includes('susleme') ||
-                 desc.includes('pasta') ||
-                 desc.includes('tatlı') ||
-                 desc.includes('kek');
+          return name.includes('motor') || 
+                 name.includes('yağ') ||
+                 name.includes('yag') ||
+                 name.includes('oil') ||
+                 name.includes('lubricant') ||
+                 name.includes('sentetik') ||
+                 desc.includes('motor') ||
+                 desc.includes('yağ');
         });
         break;
         
-      case 'dunya-mutfagi':
+      case 'arac-aksesuar':
         filteredProducts = products.filter(p => {
           const name = p.name.toLowerCase();
           const desc = (p.description || '').toLowerCase();
-          return name.includes('pizza') || 
-                 name.includes('sushi') ||
-                 name.includes('wok') ||
-                 name.includes('tortilla') ||
-                 name.includes('döner') ||
-                 name.includes('doner') ||
-                 desc.includes('dünya') ||
-                 desc.includes('uluslararası');
+          return name.includes('aksesuar') || 
+                 name.includes('araç') ||
+                 name.includes('arac') ||
+                 name.includes('kılıf') ||
+                 name.includes('kilif') ||
+                 name.includes('kemer') ||
+                 name.includes('navigasyon') ||
+                 name.includes('telefon') ||
+                 desc.includes('aksesuar') ||
+                 desc.includes('araç');
         });
         break;
         
-      case 'kahvalti':
+      case 'lastik-jant':
         filteredProducts = products.filter(p => {
           const name = p.name.toLowerCase();
           const desc = (p.description || '').toLowerCase();
-          return name.includes('kahvaltı') || 
-                 name.includes('kahvalti') ||
-                 name.includes('yumurta') ||
-                 name.includes('ekmek') ||
-                 name.includes('reçel') ||
-                 name.includes('recal') ||
-                 name.includes('kahve') ||
-                 name.includes('çay') ||
-                 name.includes('cay') ||
-                 desc.includes('kahvaltı');
+          return name.includes('lastik') || 
+                 name.includes('jant') ||
+                 name.includes('tekerlek') ||
+                 name.includes('rim') ||
+                 name.includes('tire') ||
+                 name.includes('kauçuk') ||
+                 name.includes('kaucuk') ||
+                 desc.includes('lastik') ||
+                 desc.includes('jant');
         });
         break;
         
-      case 'mutfak-esyalari':
+      case 'arac-temizlik':
         filteredProducts = products.filter(p => {
           const name = p.name.toLowerCase();
           const desc = (p.description || '').toLowerCase();
-          return name.includes('tencere') || 
-                 name.includes('tava') ||
-                 name.includes('bıçak') ||
-                 name.includes('bicak') ||
-                 name.includes('blender') ||
-                 name.includes('fırın') ||
-                 name.includes('firin') ||
-                 name.includes('spatula') ||
-                 name.includes('mikser') ||
-                 name.includes('terazi') ||
-                 name.includes('stand') ||
-                 name.includes('şantiyör') ||
-                 name.includes('santiyor') ||
-                 name.includes('kalem') ||
-                 name.includes('dilim') ||
-                 name.includes('cam') ||
-                 name.includes('saklama') ||
-                 name.includes('çelik') ||
-                 name.includes('celik') ||
-                 name.includes('süzgeç') ||
-                 name.includes('suzgec') ||
-                 desc.includes('mutfak') ||
-                 desc.includes('pişir') ||
-                 desc.includes('yemek');
-        });
-        break;
-        
-      case 'saglikli-yemek':
-        filteredProducts = products.filter(p => {
-          const name = p.name.toLowerCase();
-          const desc = (p.description || '').toLowerCase();
-          return name.includes('vitamin') || 
-                 name.includes('organik') ||
-                 name.includes('sağlık') ||
-                 name.includes('saglik') ||
-                 name.includes('diyet') ||
-                 name.includes('fit') ||
-                 desc.includes('sağlık') ||
-                 desc.includes('organik');
-        });
-        break;
-        
-      case 'baharat-konserve':
-        filteredProducts = products.filter(p => {
-          const name = p.name.toLowerCase();
-          const desc = (p.description || '').toLowerCase();
-          return name.includes('baharat') || 
-                 name.includes('konserve') ||
-                 name.includes('zeytinyağı') ||
-                 name.includes('zeytinyagi') ||
-                 name.includes('sirke') ||
-                 name.includes('tuz') ||
+          return name.includes('temizlik') || 
                  name.includes('temizleyici') ||
-                 name.includes('spray') ||
-                 name.includes('parke') ||
-                 name.includes('antibakteriyel') ||
-                 name.includes('duş') ||
-                 name.includes('dus') ||
-                 name.includes('banyo') ||
-                 desc.includes('baharat') ||
-                 desc.includes('temizl');
+                 name.includes('şampuan') ||
+                 name.includes('sampuan') ||
+                 name.includes('wax') ||
+                 name.includes('polish') ||
+                 name.includes('cilalayıcı') ||
+                 name.includes('cilalayici') ||
+                 name.includes('mikrofiber') ||
+                 desc.includes('temiz') ||
+                 desc.includes('yıka');
+        });
+        break;
+        
+      case 'elektronik-sistem':
+        filteredProducts = products.filter(p => {
+          const name = p.name.toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return name.includes('elektronik') || 
+                 name.includes('sistem') ||
+                 name.includes('alarm') ||
+                 name.includes('güvenlik') ||
+                 name.includes('guvenlik') ||
+                 name.includes('kamera') ||
+                 name.includes('sensör') ||
+                 name.includes('sensor') ||
+                 name.includes('bluetooth') ||
+                 name.includes('usb') ||
+                 desc.includes('elektronik') ||
+                 desc.includes('sistem');
+        });
+        break;
+        
+      case 'yedek-parca':
+        filteredProducts = products.filter(p => {
+          const name = p.name.toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return name.includes('yedek') || 
+                 name.includes('parça') ||
+                 name.includes('parca') ||
+                 name.includes('fren') ||
+                 name.includes('balata') ||
+                 name.includes('filtre') ||
+                 name.includes('amortisör') ||
+                 name.includes('amortisör') ||
+                 name.includes('motor') ||
+                 name.includes('vites') ||
+                 desc.includes('yedek') ||
+                 desc.includes('parça');
         });
         break;
         
@@ -471,10 +430,10 @@ const Arac = () => {
     
     // Eğer filtrelenmiş ürün yoksa, kategoriye göre daha geniş arama yap
     if (filteredProducts.length === 0) {
-      console.log('Spesifik filtre boş, genel mutfak ürünlerini gösteriyor');
-      const mutfakKeywords = ['cam', 'çelik', 'terazi', 'mikser', 'stand', 'pasta', 'krem', 'süsleme', 'dilim'];
+      console.log('Spesifik filtre boş, genel araç ürünlerini gösteriyor');
+      const aracKeywords = ['araç', 'motor', 'lastik', 'yağ', 'temizlik', 'aksesuar'];
       filteredProducts = products.filter(p => 
-        mutfakKeywords.some(keyword => p.name.toLowerCase().includes(keyword))
+        aracKeywords.some(keyword => p.name.toLowerCase().includes(keyword))
       ).slice(0, 15);
     }
     
@@ -482,7 +441,7 @@ const Arac = () => {
   };
 
   const currentProducts = getFilteredProducts();
-  const currentCategoryInfo = categories[selectedCategory] || categories['pasta-tatli'];
+  const currentCategoryInfo = categories[selectedCategory] || categories['motor-yagi'];
 
   // Loading state
   if (loading) {
@@ -490,7 +449,7 @@ const Arac = () => {
       <div className="pasta-gallery-wrapper">
         <div className="loading-spinner">
           <div className="spinner"></div>
-          <p>Yemek yapma ürünleri yükleniyor...</p>
+          <p>Araç ürünleri yükleniyor...</p>
         </div>
       </div>
     );
@@ -507,17 +466,17 @@ const Arac = () => {
             <p>🔍 API Endpoint'lerini kontrol edin:</p>
             <ul>
               <li><strong>Temel endpoint:</strong> GET {API_BASE_URL}/api/products</li>
-              <li><strong>Kategori endpoint:</strong> GET {API_BASE_URL}/api/categories/1/products</li>
+              <li><strong>Kategori 7 kontrolü:</strong> category_id = 7</li>
             </ul>
             <p>💡 Tavsiyeler:</p>
             <ul>
               <li>Tarayıcıda manuel olarak {API_BASE_URL}/api/products adresini ziyaret edin</li>
+              <li>Kategori 7'de ürün olup olmadığını kontrol edin</li>
               <li>Server loglarını kontrol edin</li>
               <li>CORS ayarlarını kontrol edin</li>
-              <li>Postman ile API'yi test edin</li>
             </ul>
           </div>
-          <button onClick={fetchYemekProducts} className="retry-btn">
+          <button onClick={fetchAracProducts} className="retry-btn">
             🔄 Tekrar Dene
           </button>
         </div>
@@ -527,7 +486,7 @@ const Arac = () => {
 
   return (
     <div className="pasta-gallery-wrapper">
-      <h2 className="gallery-title">🎁 Anne için Yemek Yapma Hediye Önerileri</h2>
+      <h2 className="gallery-title">🚗 Araç Ürünleri & Aksesuar</h2>
       
       {/* Navigation */}
       <div className="navigation-section">
@@ -567,7 +526,7 @@ const Arac = () => {
 
       {/* Breadcrumb */}
       <div className="breadcrumb">
-        Anne → Yemek Yapmak → <span style={{ color: currentCategoryInfo.color, fontWeight: 'bold' }}>
+        Araç → <span style={{ color: currentCategoryInfo.color, fontWeight: 'bold' }}>
           {currentCategoryInfo.name}
         </span>
       </div>
@@ -578,30 +537,16 @@ const Arac = () => {
         {user && <span className="user-welcome"> | Hoş geldin, <strong>{user.username}</strong>!</span>}
       </div>
 
-      {/* Debug Bilgisi - Geliştirme için */}
-      <div className="debug-info" style={{ 
-        background: '#f8f9fa', 
-        padding: '10px', 
-        margin: '10px 0', 
-        fontSize: '12px',
-        borderRadius: '5px',
-        border: '1px solid #dee2e6'
-      }}>
-        🔍 Debug: Toplam {products.length} ürün yüklendi, {currentProducts.length} ürün gösteriliyor
-        <br />
-        📊 Seçili kategori: {selectedCategory}
-        <br />
-        🏷️ Örnek ürünler: {products.slice(0, 3).map(p => `${p.id}-${p.name}`).join(' | ')}
-      </div>
+     
 
       {/* Ürün Yoksa Mesaj */}
       {currentProducts.length === 0 ? (
         <div className="no-products">
-          <div className="no-products-icon">🍳</div>
+          <div className="no-products-icon">🚗</div>
           <h3>Bu kategoride henüz ürün bulunmuyor</h3>
-          <p>Toplam {products.length} ürün veritabanında mevcut ama "{currentCategoryInfo.name}" kategorisinde ürün bulunamadı.</p>
+          <p>Toplam {products.length} ürün kategori 7'de mevcut ama "{currentCategoryInfo.name}" kategorisinde ürün bulunamadı.</p>
           <p>Diğer kategorileri kontrol edebilir veya daha sonra tekrar bakabilirsiniz.</p>
-          <button onClick={fetchYemekProducts} className="refresh-btn">
+          <button onClick={fetchAracProducts} className="refresh-btn">
             🔄 Ürünleri Yenile
           </button>
         </div>
@@ -626,9 +571,6 @@ const Arac = () => {
                   onError={(e) => {
                     console.log('Resim yükleme hatası:', e.target.src);
                     e.currentTarget.src = '/default-product.png';
-                  }}
-                  onLoad={() => {
-                    console.log('Resim başarıyla yüklendi:', product.image_url, '→', e.target.src);
                   }}
                 />
                 
@@ -656,7 +598,7 @@ const Arac = () => {
                 <p className="product-description">
                   {product.description && product.description.length > 100 
                     ? product.description.substring(0, 100) + '...'
-                    : product.description || 'Yemek yapma deneyiminizi keyifli hale getirecek kaliteli ürün'
+                    : product.description || 'Kaliteli araç ürünü'
                   }
                 </p>
                 
@@ -695,14 +637,7 @@ const Arac = () => {
         </div>
       )}
 
-      {/* Performans Bilgisi */}
-      <div className="performance-info">
-        ⚡ Performans: Veritabanından {products.length} ürün yüklendi
-        <br />
-        📊 Filtrelenmiş: {currentProducts.length} ürün "{currentCategoryInfo.name}" kategorisinde gösteriliyor
-        <br />
-        🖼️ Resim yolu düzeltmeleri uygulandı (public/ klasöründen yükleme)
-      </div>
+     
 
       {/* Ürün Detay Modal */}
       {isModalOpen && selectedProduct && (
@@ -745,21 +680,21 @@ const Arac = () => {
                 
                 <div className="modal-description">
                   <h4>Ürün Açıklaması:</h4>
-                  <p>{selectedProduct.description || 'Bu ürün mutfak işlerinizde size büyük kolaylık sağlayacak. Yemek yapma deneyiminizi daha keyifli ve verimli hale getirir. Anne için mükemmel bir hediye seçeneği.'}</p>
+                  <p>{selectedProduct.description || 'Bu ürün aracınız için gerekli olan kaliteli bir üründür. Güvenli sürüş deneyiminizi arttırır ve aracınızın performansını optimize eder.'}</p>
                   
                   <div className="product-details">
                     <p><strong>Stok:</strong> {selectedProduct.stock || 50} adet</p>
                     <p><strong>Ürün ID:</strong> {selectedProduct.id}</p>
-                    <p><strong>Kategori:</strong> Yemek Yapmak</p>
+                    <p><strong>Kategori:</strong> Araç Ürünleri</p>
                   </div>
 
                   <h4>Özellikler:</h4>
                   <ul>
                     <li>Yüksek kaliteli malzemeden üretilmiştir</li>
-                    <li>Mutfakta pratik kullanım sağlar</li>
+                    <li>Aracınız için güvenli ve uyumlu</li>
                     <li>Dayanıklı ve uzun ömürlü</li>
-                    <li>Kolay temizlenebilir</li>
-                    <li>Güvenli kullanım için tasarlanmıştır</li>
+                    <li>Kolay montaj ve kullanım</li>
+                    <li>Garanti kapsamında</li>
                   </ul>
                 </div>
                 

@@ -7,9 +7,9 @@ function Header1() {
 
   const handleLogout = () => {
     // Oturumu sil
-    localStorage.removeItem('token'); // veya ne kullandıysan
-    sessionStorage.clear(); // opsiyonel
-    // Anasayfaya yönlendir
+    localStorage.removeItem('token'); 
+    sessionStorage.clear(); 
+ 
     navigate('/');
   };
 

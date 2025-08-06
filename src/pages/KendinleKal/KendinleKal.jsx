@@ -16,7 +16,7 @@ const KendinleKal = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Kullanıcı bilgilerini kontrol et
+  
     const userData = localStorage.getItem('user');
     if (userData) {
       try {
@@ -26,7 +26,7 @@ const KendinleKal = () => {
       }
     }
 
-    // Sepet verilerini yükle
+  
     const cartData = localStorage.getItem('sepet');
     if (cartData) {
       try {
@@ -43,8 +43,7 @@ const KendinleKal = () => {
     try {
       setLoading(true);
       
-      // KendineHediye ile aynı format kullan - hangi kategori ID'si olacak?
-      // Varsayalım ki "Kendinle Kal" kategorisi ID=4 (bu değeri gerçek kategori ID'sine göre değiştirin)
+ 
       const response = await fetch(`${API_BASE_URL}/api/categories/10/products`);
       
       if (!response.ok) {
@@ -54,15 +53,15 @@ const KendinleKal = () => {
       const data = await response.json();
       console.log('API Response:', data);
       
-      // Server'dan gelen response format kontrol et (KendineHediye ile aynı mantık)
+    
       if (data.success && data.data && data.data.products) {
-        // Yeni format: { success: true, data: { category: {...}, products: [...] } }
+       
         setProducts(data.data.products);
       } else if (Array.isArray(data)) {
-        // Eski format: direkt array
+      
         setProducts(data);
       } else if (data.products) {
-        // Başka bir format: { products: [...] }
+       
         setProducts(data.products);
       } else {
         console.error('Beklenmeyen veri formatı:', data);
@@ -73,22 +72,22 @@ const KendinleKal = () => {
       console.error('Ürünler yüklenirken hata:', error);
       setError(`Ürünler yüklenirken bir hata oluştu: ${error.message}`);
       
-      // Fallback: Eğer kategori 4 yoksa, tüm ürünleri çek ve filtrele
+   
       console.log('Fallback: Tüm ürünleri çekmeye çalışıyorum...');
       try {
         const fallbackResponse = await fetch(`${API_BASE_URL}/api/products`);
         if (fallbackResponse.ok) {
           const allProducts = await fallbackResponse.json();
-          // Kategori ID 4 olan ürünleri filtrele, yoksa rastgele bir kısmını al
+        
           const category4Products = allProducts.filter(p => p.category_id ===10);
           if (category4Products.length > 0) {
             setProducts(category4Products);
-            setError(''); // Hata mesajını temizle
+            setError(''); 
           } else {
-            // Eğer kategori 4 ürünü yoksa, rastgele ürünleri "Kendinle Kal" olarak göster
+          
             const randomProducts = allProducts.slice(0, 12);
             setProducts(randomProducts);
-            setError(''); // Hata mesajını temizle
+            setError(''); 
           }
         }
       } catch (fallbackError) {
@@ -100,12 +99,12 @@ const KendinleKal = () => {
   };
 
   const handleProductClick = (product) => {
-    // Ürün detay sayfasına ID ile yönlendir - URL'de ID görünecek
+
     navigate(`/urun/${product.id}`);
   };
 
   const addToCart = (product, event) => {
-    // Event bubbling'i durdur (kart tıklamasını engellemek için)
+
     event.stopPropagation();
 
     if (!user) {
@@ -369,23 +368,8 @@ const KendinleKal = () => {
           )}
         </div>
 
-        {/* Cart Summary */}
-        {cart.length > 0 && (
-          <div className="cart-summary">
-            <div className="cart-info">
-              <span>🛒 Sepette {cart.length} ürün</span>
-              <span>
-                Toplam: ₺{cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}
-              </span>
-            </div>
-            <button 
-              onClick={() => navigate('/sepet')}
-              className="go-to-cart-btn"
-            >
-              Sepete Git →
-            </button>
-          </div>
-        )}
+   
+       
       </div>
     </>
   );

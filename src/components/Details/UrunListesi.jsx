@@ -10,7 +10,7 @@ const UrunListesi = () => {
   const [favorites, setFavorites] = useState(new Set());
   const navigate = useNavigate();
 
-  // Veritabanından ürünleri çek
+ 
   useEffect(() => {
     const fetchUrunler = async () => {
       try {
@@ -36,7 +36,7 @@ const UrunListesi = () => {
     fetchUrunler();
   }, []);
 
-  // Favorileri localStorage'dan yükle
+ 
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favorites');
     if (savedFavorites) {
@@ -62,7 +62,7 @@ const UrunListesi = () => {
     e.preventDefault();
     e.stopPropagation();
     
-    // Auth sayfasına yönlendir
+    
     navigate('/auth', {
       state: {
         message: `${urun.name} ürününü satın almak için giriş yapmalısınız.`,
@@ -115,19 +115,19 @@ const UrunListesi = () => {
                   }}
                 />
                 
-                {/* Stok durumu badge */}
+              
                 {urun.stock <= 0 && (
                   <div className="stok-yok-badge">Stokta Yok</div>
                 )}
                 
-                {/* İndirim badge (eğer discount varsa) */}
+              
                 {urun.discount > 0 && (
                   <div className="indirim-badge">
                     %{urun.discount} İndirim
                   </div>
                 )}
 
-                {/* Favori butonu */}
+              
                 <button 
                   className={`favorite-btn ${favorites.has(urun.id) ? 'active' : ''}`}
                   onClick={(e) => toggleFavorite(urun.id, e)}
@@ -142,12 +142,12 @@ const UrunListesi = () => {
               <div className="urun-bilgi">
                 <h3 className="urun-ad">{urun.name}</h3>
                 
-                {/* Kategori bilgisi */}
+           
                 {urun.category_name && (
                   <p className="urun-kategori">{urun.category_name}</p>
                 )}
                 
-                {/* Açıklama */}
+                
                 {urun.description && (
                   <p className="urun-aciklama">
                     {urun.description.length > 100 
@@ -157,7 +157,7 @@ const UrunListesi = () => {
                   </p>
                 )}
 
-                {/* Rating */}
+           
                 <div className="rating-container">
                   <div className="stars">
                     {[...Array(5)].map((_, i) => (
@@ -173,7 +173,7 @@ const UrunListesi = () => {
                 </div>
 
                 <div className="fiyat-container">
-                  {/* İndirimli fiyat hesaplama */}
+                
                   {urun.discount > 0 && (
                     <span className="eski-fiyat">
                       {(urun.price / (1 - urun.discount / 100)).toFixed(2)} TL
@@ -190,7 +190,6 @@ const UrunListesi = () => {
                   )}
                 </div>
 
-                {/* Sepete ekle butonu */}
                 <button 
                   className={`sepete-ekle-btn ${urun.stock <= 0 ? 'disabled' : ''}`}
                   onClick={(e) => handleSepeteEkle(urun, e)}

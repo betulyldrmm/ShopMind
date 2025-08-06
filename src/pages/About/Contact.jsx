@@ -62,17 +62,16 @@ function Contact() {
   return (
     <div className="page-container">
       <div className="content-wrapper">
-        {/* Header Bölümü */}
-        <div className="page-header">
+           <div className="page-header">
           <h1 className="page-title">İletişim</h1>
           <p className="page-subtitle">
             Sizinle iletişim kurmak için buradayız
           </p>
         </div>
 
-        {/* Ana İçerik */}
+    
         <div className="page-content">
-          {/* Giriş Metni */}
+         
           <div className="content-section">
             <h2 className="section-title">Bize Ulaşın</h2>
             <p className="section-text">
@@ -88,7 +87,7 @@ function Contact() {
             </p>
           </div>
 
-          {/* İletişim Bilgileri */}
+       
           <div className="content-section">
             <h2 className="section-title">İletişim Bilgileri</h2>
             <div className="features-grid">
@@ -109,7 +108,7 @@ function Contact() {
             </div>
           </div>
 
-          {/* İletişim Formu */}
+  
           <div className="content-section">
             <h2 className="section-title">Mesaj Gönderin</h2>
             <div style={{ maxWidth: '800px', margin: '0 auto' }}>

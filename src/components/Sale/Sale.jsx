@@ -23,7 +23,7 @@ const Sale = () => {
         const data = await response.json();
         console.log('🔥 API\'den gelen indirimli ürünler:', data);
 
-        // BASIT HAL - PopularProducts gibi aynı mantık
+       
         const formattedProducts = data.map(product => {
           console.log(`Ürün ${product.id} - Image URL: ${product.image_url}`);
           
@@ -54,7 +54,7 @@ const Sale = () => {
     fetchProducts();
   }, []);
 
-  // Favori durumunu localStorage'dan yükle
+
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favorites');
     if (savedFavorites) {
@@ -63,7 +63,7 @@ const Sale = () => {
   }, []);
 
   const toggleFavorite = (productId, e) => {
-    e.stopPropagation(); // Ürün kartına tıklamayı engelle
+    e.stopPropagation(); 
     
     const savedFavorites = localStorage.getItem('favorites');
     const currentFavorites = savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
@@ -244,7 +244,7 @@ const Sale = () => {
                     </div>
                   </div>
 
-                  {/* Hover efekti için overlay */}
+                 
                   <div className="producttt-hover-overlay">
                     
                   </div>
@@ -254,7 +254,7 @@ const Sale = () => {
           </div>
         </div>
 
-        {/* Sağ ok */}
+   
         {currentIndex < products.length - 4 && (
           <button
             onClick={nextSlide}

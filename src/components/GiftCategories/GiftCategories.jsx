@@ -6,7 +6,7 @@ const categories = [
     title: "Kendine Hediye",
     subtitle: "Bir sürpriz yap",
     image: "/images/giftbox.jpg",
-    path: "/KendineHediye", // veya istediğiniz sayfa yolu
+    path: "/KendineHediye", 
     
   },
   {
@@ -37,17 +37,9 @@ const GiftCategories = () => {
   const handleCategoryClick = (category) => {
     console.log(`Kategori tıklandı: ${category.title}`);
     
-    // Yöntem 1: Doğrudan sayfa yönlendirme
+    
     window.location.href = category.path;
     
-    // Yöntem 2: React Router kullanıyorsanız (bu satırı aktif edin ve üsttekini kapatın)
-    // navigate(category.path);
-    
-    // Yöntem 3: Hash-based routing için
-    // window.location.hash = category.id;
-    
-    // Yöntem 4: Query parameter ile aynı sayfada filtreleme
-    // window.location.search = `?category=${category.id}`;
   };
 
   const handleKeyPress = (event, category) => {

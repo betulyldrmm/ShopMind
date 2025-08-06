@@ -31,7 +31,7 @@ const UrunDetay = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
 
-  // Mock data for product variants
+
   const productSizes = ['S', 'M', 'L', 'XL'];
   const productColors = [
     { name: 'Siyah', code: '#000000' },
@@ -40,7 +40,6 @@ const UrunDetay = () => {
     { name: 'Mavi', code: '#3B82F6' }
   ];
 
-  // Ürün detaylarını veritabanından çek
   useEffect(() => {
     const fetchUrun = async () => {
       try {
@@ -70,7 +69,7 @@ const UrunDetay = () => {
     }
   }, [urunId]);
 
-  // Favorileri kontrol et
+  
   useEffect(() => {
     if (urun?.id) {
       const savedFavorites = localStorage.getItem('favorites');
@@ -105,13 +104,12 @@ const UrunDetay = () => {
   };
 
   const sepeteEkle = () => {
-    // Önce kullanıcının giriş yapıp yapmadığını kontrol et
+   
     const userData = localStorage.getItem('user');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     
     console.log('Sepete ekleme başlıyor...', { userData, isLoggedIn });
     
-    // Eğer giriş yapmamışsa, giriş sayfasına yönlendir
     if (!userData || isLoggedIn !== 'true') {
       console.log('Kullanıcı giriş yapmamış, AuthForm sayfasına yönlendiriliyor...');
       navigate('/authForm', {
@@ -125,15 +123,15 @@ const UrunDetay = () => {
     }
     
     try {
-      // Kullanıcı giriş yapmışsa, ürünü sepete ekle
+   
       const user = JSON.parse(userData);
       console.log('Kullanıcı doğrulandı:', user.username);
       
-      // Mevcut sepeti al
+   
       const currentCart = JSON.parse(localStorage.getItem('sepet')) || [];
       console.log('Mevcut sepet:', currentCart);
       
-      // Aynı ürün sepette var mı kontrol et
+ 
       const existingItemIndex = currentCart.findIndex(item => 
         item.id === urun.id && 
         item.selectedSize === selectedSize && 
@@ -141,10 +139,9 @@ const UrunDetay = () => {
       );
       
       if (existingItemIndex !== -1) {
-        // Ürün zaten sepette varsa, adetini artır
+   
         const newQuantity = currentCart[existingItemIndex].adet + adet;
-        
-        // Stok kontrolü
+    
         if (newQuantity > urun.stock) {
           alert(`Maksimum ${urun.stock} adet ekleyebilirsiniz. Sepetteki mevcut adet: ${currentCart[existingItemIndex].adet}`);
           currentCart[existingItemIndex].adet = urun.stock;
@@ -154,7 +151,7 @@ const UrunDetay = () => {
         console.log('Mevcut ürün güncellendi:', currentCart[existingItemIndex]);
         
       } else {
-        // Yeni ürün olarak sepete ekle
+     
         const sepetItem = {
           id: urun.id,
           name: urun.name,
@@ -171,21 +168,21 @@ const UrunDetay = () => {
         console.log('Yeni ürün sepete eklendi:', sepetItem);
       }
       
-      // Güncellenmiş sepeti localStorage'a kaydet
+  
       localStorage.setItem('sepet', JSON.stringify(currentCart));
       console.log('Sepet localStorage\'a kaydedildi:', currentCart);
       
-      // Başarı mesajı göster
+   
       alert(`✅ ${urun.name} sepete eklendi! (${adet} adet)\n\nSepet sayfasına yönlendiriliyorsunuz...`);
       
-      // Sepet sayfasına yönlendir
+      
       setTimeout(() => {
         navigate('/sepet');
       }, 1000);
       
     } catch (error) {
       console.error('Sepete ekleme hatası:', error);
-      // Kullanıcı verisi bozuksa, çıkış yap ve giriş sayfasına yönlendir
+     
       localStorage.removeItem('user');
       localStorage.removeItem('isLoggedIn');
       navigate('/authForm', {
@@ -196,7 +193,7 @@ const UrunDetay = () => {
     }
   };
 
-  // Resim URL'sini düzenle
+
   const getImageUrl = (imageUrl) => {
     if (!imageUrl) return '/spor.jpg';
     

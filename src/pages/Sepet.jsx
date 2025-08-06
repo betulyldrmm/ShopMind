@@ -371,7 +371,7 @@ Teşekkür ederiz!`);
       <Header2 />
       <div className="sepet-container">
         
-        {/* Sepet Header */}
+      
         <div className="sepet-header">
           <div>
             <h1>
@@ -386,7 +386,7 @@ Teşekkür ederiz!`);
           
           <div className="header-buttons">
             <button 
-              onClick={() => navigate('/urunler')} 
+              onClick={() => navigate('/home1')} 
               className="header-btn continue-shopping"
             >
               <Package size={16} />
@@ -402,7 +402,7 @@ Teşekkür ederiz!`);
           </div>
         </div>
 
-        {/* Sepet boşsa */}
+      
         {sepetItems.length === 0 ? (
           <div className="sepet-bos">
             <ShoppingCart size={64} />
@@ -418,7 +418,7 @@ Teşekkür ederiz!`);
           </div>
         ) : (
           <>
-            {/* Sepet içeriği */}
+            
             <div className="sepet-items">
               {sepetItems.map((item, index) => (
                 <div key={`${item.id}-${index}`} className="sepet-item">

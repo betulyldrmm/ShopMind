@@ -43,7 +43,7 @@ const SporaBasla = () => {
     try {
       setLoading(true);
       
-      // KendineHediye ile aynı format kullan - kategori ID 3 için
+  
       const response = await fetch(`${API_BASE_URL}/api/categories/3/products`);
       
       if (!response.ok) {
@@ -53,15 +53,15 @@ const SporaBasla = () => {
       const data = await response.json();
       console.log('API Response:', data);
       
-      // Server'dan gelen response format kontrol et (KendineHediye ile aynı mantık)
+    
       if (data.success && data.data && data.data.products) {
-        // Yeni format: { success: true, data: { category: {...}, products: [...] } }
+        
         setProducts(data.data.products);
       } else if (Array.isArray(data)) {
-        // Eski format: direkt array
+     
         setProducts(data);
       } else if (data.products) {
-        // Başka bir format: { products: [...] }
+      
         setProducts(data.products);
       } else {
         console.error('Beklenmeyen veri formatı:', data);
@@ -72,22 +72,22 @@ const SporaBasla = () => {
       console.error('Ürünler yüklenirken hata:', error);
       setError(`Ürünler yüklenirken bir hata oluştu: ${error.message}`);
       
-      // Fallback: Eğer kategori 3 yoksa, tüm ürünleri çek ve filtrele
+     
       console.log('Fallback: Tüm ürünleri çekmeye çalışıyorum...');
       try {
         const fallbackResponse = await fetch(`${API_BASE_URL}/api/products`);
         if (fallbackResponse.ok) {
           const allProducts = await fallbackResponse.json();
-          // Kategori ID 3 olan ürünleri filtrele, yoksa rastgele bir kısmını al
+       
           const category3Products = allProducts.filter(p => p.category_id === 3);
           if (category3Products.length > 0) {
             setProducts(category3Products);
-            setError(''); // Hata mesajını temizle
+            setError(''); 
           } else {
-            // Eğer kategori 3 ürünü yoksa, rastgele ürünleri "Spora Başla" olarak göster
+      
             const randomProducts = allProducts.slice(0, 12);
             setProducts(randomProducts);
-            setError(''); // Hata mesajını temizle
+            setError(''); 
           }
         }
       } catch (fallbackError) {
@@ -99,12 +99,12 @@ const SporaBasla = () => {
   };
 
   const handleProductClick = (product) => {
-    // Ürün detay sayfasına ID ile yönlendir - URL'de ID görünecek
+   
     navigate(`/urun/${product.id}`);
   };
 
   const addToCart = (product, event) => {
-    // Event bubbling'i durdur (kart tıklamasını engellemek için)
+    
     event.stopPropagation();
 
     if (!user) {
@@ -368,18 +368,10 @@ const SporaBasla = () => {
           )}
         </div>
 
-        {/* Cart Summary */}
-        {cart.length > 0 && (
-          <div className="cart-summary">
-           
-            <button 
-              onClick={() => navigate('/sepet')}
-              className="go-to-cart-btn"
-            >
-              Sepete Git →
-            </button>
-          </div>
-        )}
+       
+        
+         
+        
       </div>
     </>
   );

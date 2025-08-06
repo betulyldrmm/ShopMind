@@ -24,14 +24,14 @@ const PastaTatli = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   
-  // Yeni state'ler - veritabanı için
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Kullanıcı bilgilerini kontrol et
+    
     const userData = localStorage.getItem('user');
     if (userData) {
       try {
@@ -45,44 +45,44 @@ const PastaTatli = () => {
       setSelectedCategory(subcategoryId);
     }
     
-    // Sepet sayısını güncelle
+   
     updateCartCount();
     
-    // Ürünleri çek
+
     fetchYemekProducts();
   }, [subcategoryId]);
 
-  // Resim URL'sini düzelt
+  
   const fixImageUrl = (imageUrl) => {
     if (!imageUrl) return '/default-product.png';
     
-    // Eğer http ile başlıyorsa olduğu gibi bırak
+    
     if (imageUrl.startsWith('http')) {
       return imageUrl;
     }
     
-    // /images/ ile başlıyorsa sadece dosya adını al
+    
     if (imageUrl.startsWith('/images/')) {
       const fileName = imageUrl.replace('/images/', '');
       return `/${fileName}`;
     }
     
-    // images/ ile başlıyorsa sadece dosya adını al
+   
     if (imageUrl.startsWith('images/')) {
       const fileName = imageUrl.replace('images/', '');
       return `/${fileName}`;
     }
     
-    // Zaten / ile başlıyorsa olduğu gibi bırak
+    
     if (imageUrl.startsWith('/')) {
       return imageUrl;
     }
     
-    // Hiçbiri değilse başına / ekle
+    
     return `/${imageUrl}`;
   };
 
-  // fetchYemekProducts fonksiyonunu güncelleyelim
+
   const fetchYemekProducts = async () => {
     try {
       setLoading(true);
@@ -90,7 +90,6 @@ const PastaTatli = () => {
       
       console.log('API çağrısı başlıyor...');
       
-      // Mutfak ürünlerinin KESIN ID listesi
       const kitchenProductIds = [
         306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319,
         321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334,
@@ -127,7 +126,7 @@ const PastaTatli = () => {
           console.log('Toplam ürün sayısı:', allProducts.length);
           console.log('Aranacak mutfak ID\'leri:', kitchenProductIds.length, 'adet');
           
-          // SADECE BELİRLİ ID'LERİ FİLTRELE - EN KEİN YÖNTEM
+          
           fetchedProducts = allProducts.filter(product => {
             const productId = parseInt(product.id);
             const isKitchenProduct = kitchenProductIds.includes(productId);
@@ -159,7 +158,6 @@ const PastaTatli = () => {
             const aId = parseInt(a.id);
             const bId = parseInt(b.id);
             
-            // 306-320 arası pasta/tatlı ürünleri önce gelsin
             const aIsPasta = aId >= 306 && aId <= 320;
             const bIsPasta = bId >= 306 && bId <= 320;
             
@@ -201,7 +199,7 @@ const PastaTatli = () => {
     }
   };
 
-  // Sepet sayısını güncelle
+
   const updateCartCount = () => {
     try {
       const sepetData = localStorage.getItem('sepet');
@@ -332,7 +330,7 @@ const PastaTatli = () => {
   };
 
   const handleProductClick = (product) => {
-    // Ürün detay sayfasına ID ile yönlendir
+    
     navigate(`/urun/${product.id}`);
   };
 
@@ -466,7 +464,7 @@ const PastaTatli = () => {
         break;
         
       default:
-        // Varsayılan olarak ilk 20 ürünü göster
+       
         filteredProducts = products.slice(0, 20);
     }
     
@@ -487,7 +485,7 @@ const PastaTatli = () => {
   const currentProducts = getFilteredProducts();
   const currentCategoryInfo = categories[selectedCategory] || categories['pasta-tatli'];
 
-  // Loading state
+  
   if (loading) {
     return (
       <div className="pasta-gallery-wrapper">
@@ -499,7 +497,7 @@ const PastaTatli = () => {
     );
   }
 
-  // Error state
+  
   if (error && products.length === 0) {
     return (
       <div className="pasta-gallery-wrapper">
@@ -635,16 +633,8 @@ const PastaTatli = () => {
                   }}
                 />
                 
-                {/* Favori Butonu */}
-                <button
-                  className={`favorite-btn ${favorites.has(product.id) ? 'active' : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(product.id);
-                  }}
-                >
-                  <Heart size={16} fill={favorites.has(product.id) ? '#ff6b9d' : 'none'} />
-                </button>
+             
+               
               </div>
               
               <div className="product-info">
@@ -698,14 +688,7 @@ const PastaTatli = () => {
         </div>
       )}
 
-      {/* Performans Bilgisi */}
-      <div className="performance-info">
-        ⚡ Performans: Veritabanından {products.length} ürün yüklendi
-        <br />
-        📊 Filtrelenmiş: {currentProducts.length} ürün "{currentCategoryInfo.name}" kategorisinde gösteriliyor
-        <br />
-        🖼️ Resim yolu düzeltmeleri uygulandı (public/ klasöründen yükleme)
-      </div>
+     
 
       {/* Ürün Detay Modal */}
       {isModalOpen && selectedProduct && (

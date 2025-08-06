@@ -43,6 +43,21 @@ const recipients = [
         ]
       }
     ]
+  },
+   {
+    id: 'büyükbaba',
+    name: 'BüyükBaba',
+    icon: '👨',
+    categories: [
+      {
+        id: 'otomobil-esyalari',
+        name: 'Nostaljik Ürünler',
+        subcategories: [
+          { id: 'arac-ici', name: 'TÜM ÜRÜNLER', path: '/buyukbaba/nostalji/nostalji' },
+          
+        ]
+      }
+    ]
   }
 ];
 
@@ -87,7 +102,6 @@ const GiftFinderHomePage = () => {
     }
   };
 
-  // Alt kategori seçimi - otomatik yönlendirme olmadan
   const handleSubcategorySelect = (subcategory) => {
     setSelectedSubcategory(subcategory);
     setOpenSub(false);
@@ -132,7 +146,7 @@ const GiftFinderHomePage = () => {
           )}
         </div>
 
-        {/* Kategori */}
+       
         <div className={`dropdown ${!selectedRecipient ? 'disabled' : ''}`} ref={categoryRef}>
           <button
             className="trigger"
@@ -165,7 +179,7 @@ const GiftFinderHomePage = () => {
           )}
         </div>
 
-        {/* Alt Kategori - Otomatik yönlendirme kaldırıldı */}
+        
         <div className={`dropdown ${!selectedCategory ? 'disabled' : ''}`} ref={subRef}>
           <button
             className="trigger"
@@ -214,7 +228,7 @@ const GiftFinderHomePage = () => {
         </button>
       </div>
 
-      {/* Hızlı Erişim Butonları */}
+    
       
       </div>
   
