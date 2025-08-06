@@ -1,0 +1,126 @@
+/* Genel yerleşim */
+.heade {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-container {
+  background-color: #ffffff;
+  padding: 25px 20px;
+  box-shadow: 0 8px 32px rgba(30, 64, 175, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  width: 1000px;
+}
+
+.search-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: row; /* Yan yana sıralama için */
+  gap: 20px;
+  flex-wrap: nowrap; /* Alt satıra geçmeyi önler */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tüm butonlar ortak stil */
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  font-size: 17px;
+  font-weight: 700;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  min-width: 200px;
+  height: 60px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+  flex-direction: row;
+  white-space: nowrap; /* Metinlerin sarılmasını önler */
+  height: 60px;
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Özel stiller */
+.gift-btn {
+  background: linear-gradient(135deg, #b45309, #d97706);
+}
+.gift-btn:hover {
+  background: linear-gradient(135deg, #92400e, #b45309);
+}
+
+.cart-btn {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+.cart-btn:hover {
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+}
+
+.spin-btn {
+  background: linear-gradient(135deg, #002c83, #9e1313);
+}
+.spin-btn:hover {
+  background: linear-gradient(135deg, #15803d, #16a34a);
+}
+
+/* Dönen ikon sadece çarkta */
+.spin-icon {
+  animation: spin-icon 3s linear infinite;
+}
+
+/* İkon dönme animasyonu */
+@keyframes spin-icon {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-container {
+    width: 100%;
+    padding: 20px 10px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    align-items: center;
+  }
+  
+  .action-button {
+    width: 90%;
+    max-width: 320px;
+  }
+}
+
+/* Küçük ekranlar için ek responsive ayarlar */
+@media (max-width: 1050px) {
+  .header-container {
+    width: 95%;
+  }
+  
+  .action-button {
+    min-width: 150px;
+    font-size: 15px;
+    padding: 14px 20px;
+  }
+}

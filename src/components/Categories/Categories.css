@@ -1,0 +1,288 @@
+/* Categories.css - Yan Yana ve Şık Mavi Tasarım */
+
+.category-navv {
+  width: 100%;
+  background: linear-gradient(135deg, #004183 0%, #1565c0 100%);
+  box-shadow: 0 4px 20px rgba(25, 118, 210, 0.15);
+  border-radius: 12px;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.category-listt {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+}
+
+.category-itemm {
+  flex: 1;
+  min-width: 120px;
+  max-width: 270px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+
+  color: #0628ad;
+  height: 80px;
+}
+
+.category-itemm:last-child {
+  border-right: none;
+}
+
+.category-itemm:hover {
+  background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
+  z-index: 10;
+}
+
+.category-itemm:active {
+  transform: translateY(0);
+  transition: transform 0.1s ease;
+}
+
+.container {
+  padding: 20px 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  color: rgb(4, 4, 4);
+}
+
+.category-icon {
+  font-size: 23px;
+  color: #011049;
+  transition: all 0.3s ease;
+  margin-bottom: 4px;
+}
+
+.category-itemm:hover .category-icon {
+  color: #041670;
+  transform: scale(1.1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.category-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #03015d;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.category-itemm:hover .category-name {
+  color: #071e61;
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .category-itemm {
+    min-width: 100px;
+    max-width: 150px;
+  }
+  
+  .category-icon {
+    font-size: 20px;
+  }
+  
+  .category-name {
+    font-size: 12px;
+  }
+  
+  .container {
+    padding: 16px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .category-listt {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1px;
+  }
+  
+  .category-itemm {
+    flex: 0 0 calc(33.333% - 1px);
+    min-width: auto;
+    max-width: none;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .category-itemm:nth-child(3n) {
+    border-right: none;
+  }
+  
+  .category-itemm:hover {
+    transform: scale(1.02);
+  }
+  
+  .container {
+    padding: 14px 8px;
+  }
+  
+  .category-icon {
+    font-size: 18px;
+  }
+  
+  .category-name {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-itemm {
+    flex: 0 0 calc(50% - 1px);
+  }
+  
+  .category-name {
+    font-size: 10px;
+  }
+  
+  .category-icon {
+    font-size: 16px;
+  }
+  
+  .container {
+    padding: 12px 6px;
+  }
+}
+
+/* Hata ve boş durum stilleri - Mavi tema ile uyumlu */
+.categories-loading, 
+.categories-error, 
+.categories-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  min-height: 200px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.categories-loading {
+  background: linear-gradient(135deg, #045087 0%, #094f89 100%);
+  color: #1565c0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border: 2px solid #90caf9;
+}
+
+.categories-loading::before {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 3px solid #90caf9;
+  border-top: 3px solid #1565c0;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.categories-error {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  color: #c62828;
+  border: 2px solid #ef5350;
+}
+
+.categories-error p {
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.categories-empty {
+  background: linear-gradient(135deg, #7a2e2e 0%, #eeeeee 100%);
+  color: #424242;
+  border: 2px solid #bdbdbd;
+}
+
+.categories-empty p {
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.retry-button {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+.retry-button:hover {
+  background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+}
+
+.retry-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+/* Hover efektleri için ek animasyonlar */
+.category-itemm::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.category-itemm:hover::before {
+  opacity: 1;
+}
+
+/* Focus durumu için accessibility */
+.category-itemm:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+}
+
+.category-itemm:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+}

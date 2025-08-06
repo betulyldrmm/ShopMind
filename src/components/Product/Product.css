@@ -1,0 +1,411 @@
+
+        .carousel-container {
+          position: relative;
+          width: 100%;
+          max-width: 1900px;
+          margin: 0 auto;
+          border-radius: 24px;
+          overflow: hidden;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          height: 700px;
+        }
+
+        /* Date Badge */
+        .date-badge {
+          position: absolute;
+          top: 24px;
+          left: 24px;
+          z-index: 20;
+        }
+
+        .date-content {
+          background-color: #ffffff;
+          color: #374151;
+          padding: 12px 16px;
+          border-radius: 12px;
+          text-align: center;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-number {
+          font-size: 32px;
+          font-weight: bold;
+          line-height: 1;
+        }
+
+        .date-text {
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          line-height: 1;
+        }
+
+        /* Brand Logo */
+        .brand-logo {
+          position: absolute;
+          top: 32px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 20;
+        }
+
+        .brand-text {
+          color: #374151;
+          font-size: 32px;
+          font-weight: bold;
+          letter-spacing: 0.2em;
+        }
+
+        /* Main Content */
+        .main-content {
+          position: relative;
+          height: 800px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+
+        .slide {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          transition: opacity 0.7s ease-in-out;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+
+        .slide.active {           
+    opacity: 1;         
+}          
+
+.slide-0 {           
+    background-image: url('ana1.jpg');          
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    /* Modern tarayıcılar için */
+    image-rendering: high-quality;
+}          
+
+.slide-1 {           
+    background-image: url('ana2.jpg');             
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    /* Modern tarayıcılar için */
+    image-rendering: high-quality;
+}          
+
+.slide-2 {           
+    background-image: url('ana3.jpg');             
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    /* Modern tarayıcılar için */
+    image-rendering: high-quality;
+}
+
+/* Alternatif olarak, daha modern yaklaşım */
+.slide-0, .slide-1, .slide-2 {
+    /* Resim kalitesini artırmak için */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
+    /* Anti-aliasing için */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+        /* Geometric Shapes */
+        .shapes-container {
+          position: absolute;
+          inset: 0;
+        }
+
+        .shape {
+          position: absolute;
+          border-radius: 50%;
+        }
+
+        .shape-1 {
+          top: 64px;
+          left: 80px;
+          width: 128px;
+          height: 128px;
+          background: linear-gradient(to right, #fed7aa, #fef3c7);
+          opacity: 0.8;
+        }
+
+        .shape-2 {
+          bottom: 80px;
+          right: 64px;
+          width: 96px;
+          height: 96px;
+          background: linear-gradient(to right, #fecaca, #fed7aa);
+          opacity: 0.7;
+        }
+
+        .shape-3 {
+          top: 128px;
+          right: 128px;
+          width: 64px;
+          height: 64px;
+          background: white;
+          opacity: 0.6;
+        }
+
+        /* Products Container */
+        .products-container {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .products-wrapper {
+          position: relative;
+        }
+
+        /* Product Images */
+        .product-image {
+          object-fit: cover;
+          border-radius: 16px;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-product {
+          transition: transform 0.3s ease;
+        }
+
+        .main-product:hover {
+          transform: scale(1.05);
+        }
+
+        .main-image {
+          width: 192px;
+          height: 250px;
+        }
+
+        .secondary-image {
+          width: 128px;
+          height: 500px;
+        }
+
+        .secondary-product {
+          position: absolute;
+        }
+
+        .secondary-1 {
+          bottom: -32px;
+          left: -64px;
+          transform: rotate(12deg);
+          opacity: 0.9;
+        }
+
+        .secondary-2 {
+          top: -32px;
+          right: -48px;
+          transform: rotate(-12deg);
+          opacity: 0.8;
+        }
+
+        /* Info Panel */
+        .info-panel {
+          position: absolute;
+          right: 24px;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 20;
+        }
+
+        .panel-content {
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-radius: 16px;
+          padding: 24px;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+          max-width: 280px;
+        }
+
+        .panel-date {
+          color: #2563eb;
+          font-size: 14px;
+          font-weight: 500;
+          margin-bottom: 4px;
+        }
+
+        .panel-title {
+          font-size: 24px;
+          font-weight: bold;
+          color: #1f2937;
+          margin-bottom: 16px;
+          line-height: 1.2;
+        }
+
+        /* Action Button */
+        .action-button {
+          width: 100%;
+          background-color: #7c3aed;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-weight: 500;
+          font-size: 14px;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          transition: all 0.2s ease;
+        }
+
+        .action-button:hover {
+          background-color: #6d28d9;
+        }
+
+        .button-arrow {
+          width: 16px;
+          height: 16px;
+          transition: transform 0.2s ease;
+        }
+
+        .action-button:hover .button-arrow {
+          transform: translateX(4px);
+        }
+
+        /* Navigation Arrows */
+        .nav-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 20;
+          background: rgba(255, 255, 255, 0.9);
+          border: none;
+          border-radius: 50%;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-arrow:hover {
+          background: white;
+          transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-left {
+          left: 24px;
+        }
+
+        .nav-right {
+          right: 24px;
+        }
+
+        .arrow-icon {
+          width: 20px;
+          height: 20px;
+          color: #374151;
+        }
+
+        /* Dots Navigation */
+        .dots-container {
+          position: absolute;
+          bottom: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 20;
+        }
+
+        .dots-wrapper {
+          display: flex;
+          gap: 12px;
+        }
+
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background-color: #9ca3af;
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .dot:hover {
+          background-color: #6b7280;
+        }
+
+        .dot.active {
+          background-color: #1f2937;
+          transform: scale(1.25);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          .carousel-container {
+            height: 320px;
+            margin: 0 16px;
+          }
+          
+          .date-badge {
+            top: 16px;
+            left: 16px;
+          }
+          
+          .brand-text {
+            font-size: 24px;
+          }
+          
+          .info-panel {
+            right: 16px;
+          }
+          
+          .panel-content {
+            max-width: 240px;
+            padding: 20px;
+          }
+          
+          .panel-title {
+            font-size: 20px;
+          }
+          
+          .main-image {
+            width: 160px;
+            height: 120px;
+          }
+          
+          .secondary-image {
+            width: 100px;
+            height: 75px;
+          }
+
+          .nav-arrow {
+            width: 40px;
+            height: 40px;
+          }
+
+          .nav-left {
+            left: 16px;
+          }
+
+          .nav-right {
+            right: 16px;
+          }
+        }
+      

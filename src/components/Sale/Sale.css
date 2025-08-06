@@ -1,0 +1,671 @@
+/* SALE.CSS - Modern Flash Sale Ürün Tasarımı */
+
+.flashhh-products-container {
+    width: 2000px;
+    background: linear-gradient(135deg, #430101d0 0%, #5e6ab2 50%, #85020275 );
+    padding: 2.5rem;
+    border-radius: 24px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(255, 107, 107, 0.3);
+    margin: 2rem 0;
+    margin-left: 100px;
+}
+
+.flashhh-products-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        transparent 25%, 
+        transparent 75%, 
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    pointer-events: none;
+}
+
+.flashhh-products-container::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+.flashhh-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.flashhh-title-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.flashhh-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+}
+
+.flashhh-title h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin: 0;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff, #f1f5f9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.flashhh-title::before {
+    content: '⚡';
+    font-size: 2.5rem;
+    animation: pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(15deg); }
+}
+
+.flashhh-timer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.flashhh-timer::before {
+    content: '⏰';
+    font-size: 1.5rem;
+    animation: tick 1s ease-in-out infinite;
+}
+
+@keyframes tick {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(15deg); }
+}
+
+.timerr-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    min-width: 50px;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.timerr-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.vieww-all-btn {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 1rem 2rem;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(15px);
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.vieww-all-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.vieww-all-btn:hover::before {
+    left: 100%;
+}
+
+.vieww-all-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.vieww-all-btn::after {
+    content: '→';
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.vieww-all-btn:hover::after {
+    transform: translateX(5px);
+}
+
+.carouselll-container {
+    position: relative;
+    z-index: 2;
+}
+
+.carouselll-overflow {
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.carouselll-track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 1.5rem;
+}
+
+.producttt-card-wrapper {
+    width: 25%;
+    flex-shrink: 0;
+}
+
+.producttt-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    height: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    position: relative;
+}
+
+.producttt-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ff6b6b, #ffa500);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.producttt-card:hover::before {
+    opacity: 1;
+}
+
+.producttt-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 60px rgba(255, 107, 107, 0.25);
+}
+
+.producttt-image-container {
+    position: relative;
+    height: 280px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.producttt-badges {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.badgeee-delivery {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badgeee-delivery::before {
+    content: '🚚';
+    font-size: 0.8rem;
+}
+
+.badgeee-cargo {
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badgeee-cargo::before {
+    content: '📦';
+    font-size: 0.8rem;
+}
+
+.favoriteee-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    padding: 0.8rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+.favoriteee-btn:hover {
+    background: #ffffff;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.favoriteee-icon {
+    width: 18px;
+    height: 18px;
+    color: #64748b;
+    transition: all 0.3s ease;
+}
+
+.favoriteee-icon.active {
+    color: #ef4444;
+    fill: currentColor;
+    transform: scale(1.2);
+}
+
+.producttt-badge {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 10;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.producttt-badge::before {
+    content: '🔥';
+    margin-right: 0.5rem;
+}
+
+.producttt-image-placeholder {
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.producttt-card:hover .producttt-image-placeholder {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
+}
+
+.producttt-info {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.producttt-brand {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.producttt-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    height: 2.8rem;
+}
+
+.producttt-rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+}
+
+.ratinggg-score {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.ratinggg-stars {
+    display: flex;
+    gap: 0.1rem;
+}
+
+.starrr {
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.starrr.filled {
+    color: #fbbf24;
+    filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.5));
+}
+
+.starrr.empty {
+    color: #d1d5db;
+}
+
+.ratinggg-count {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.producttt-price {
+    margin-bottom: 1rem;
+}
+
+.priceee {
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #059669, #047857);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(5, 150, 105, 0.2));
+}
+
+.producttt-discounts {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.discounttt-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.discounttt-pink {
+    background: linear-gradient(135deg, #fce7f3, #f3e8ff);
+    color: #be185d;
+    border: 1px solid rgba(190, 24, 93, 0.2);
+}
+
+.discounttt-pink::before {
+    content: '💎';
+    font-size: 0.8rem;
+}
+
+.discounttt-orange {
+    background: linear-gradient(135deg, #fed7aa, #fef3c7);
+    color: #ea580c;
+    border: 1px solid rgba(234, 88, 12, 0.2);
+}
+
+.discounttt-orange::before {
+    content: '⚡';
+    font-size: 0.8rem;
+}
+
+.nav-arrow {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    padding: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+.nav-arrow:hover {
+    background: #ffffff;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 12px 40px rgba(255, 107, 107, 0.3);
+}
+
+.nav-arrow-icon {
+    width: 24px;
+    height: 24px;
+    color: #64748b;
+    transition: all 0.3s ease;
+}
+
+.nav-arrow:hover .nav-arrow-icon {
+    color: #ff6b6b;
+    transform: translateX(3px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .producttt-card-wrapper {
+        width: 33.333%;
+    }
+    
+    .flashhh-title h2 {
+        font-size: 2rem;
+    }
+    
+    .flashhh-products-container {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .producttt-card-wrapper {
+        width: 50%;
+    }
+    
+    .flashhh-header {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .flashhh-title-section {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .flashhh-title h2 {
+        font-size: 1.8rem;
+    }
+    
+    .flashhh-products-container {
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .carouselll-track {
+        gap: 1rem;
+    }
+    
+    .producttt-info {
+        padding: 1rem;
+    }
+    
+    .nav-arrow {
+        right: 1rem;
+        padding: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .producttt-card-wrapper {
+        width: 100%;
+    }
+    
+    .flashhh-products-container {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .flashhh-title h2 {
+        font-size: 1.5rem;
+    }
+    
+    .timerr-box {
+        padding: 0.6rem 0.8rem;
+        font-size: 1rem;
+        min-width: 40px;
+    }
+    
+    .vieww-all-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .producttt-image-container {
+        height: 180px;
+    }
+    
+    .producttt-image-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .priceee {
+        font-size: 1.2rem;
+    }
+    
+    .nav-arrow {
+        right: 0.5rem;
+        padding: 0.6rem;
+    }
+    
+    .nav-arrow-icon {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Animation for card entrance */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.producttt-card {
+    animation: slideInUp 0.6s ease-out;
+}
+
+.producttt-card:nth-child(2) { animation-delay: 0.1s; }
+.producttt-card:nth-child(3) { animation-delay: 0.2s; }
+.producttt-card:nth-child(4) { animation-delay: 0.3s; }
