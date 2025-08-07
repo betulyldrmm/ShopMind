@@ -15,7 +15,8 @@ const UrunListesi = () => {
     const fetchUrunler = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5001/api/products');
+       const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
         
         if (!response.ok) {
           throw new Error('Ürünler alınamadı');

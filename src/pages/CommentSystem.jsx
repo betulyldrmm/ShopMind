@@ -15,7 +15,8 @@ const CommentSystem = ({ productId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = 'http://localhost:5001/api';
+ const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
 
   // ProductId'yi doğrula ve düzelt
   const validateProductId = (id) => {

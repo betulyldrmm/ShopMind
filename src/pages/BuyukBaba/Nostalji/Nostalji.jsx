@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import './Nostalji.css';
-
-const API_BASE_URL = 'http://localhost:5001';
+const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
 
 // Büyükbabaya hediye kategorileri (UI için)
 const categories = {

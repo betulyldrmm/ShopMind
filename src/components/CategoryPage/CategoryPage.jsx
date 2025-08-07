@@ -66,7 +66,8 @@ useEffect(() => {
       }
       
 
-      const apiUrl = `http://localhost:5001/api/categories/${categorySlug}/products?sortBy=${sortBy}&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}`;
+      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
       
       console.log('API çağrısı yapılıyor:', apiUrl);
       

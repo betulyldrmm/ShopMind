@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './KendinleKal.css';
 import Header2 from '../../components/Header2/Header2';
 
-const API_BASE_URL = 'http://localhost:5001';
-
+const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
 const KendinleKal = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -177,11 +177,7 @@ const KendinleKal = () => {
             <p>{error}</p>
             <div className="error-details">
               <p>🔍 Kontrol edilecekler:</p>
-              <ul>
-                <li>Server çalışıyor mu? (http://localhost:5001)</li>
-                <li>Kategori ID 4 veritabanında var mı?</li>
-                <li>Bu kategoride ürün var mı?</li>
-              </ul>
+              
             </div>
             <button onClick={fetchKendinleKalProducts} className="retry-btn">
               🔄 Tekrar Dene

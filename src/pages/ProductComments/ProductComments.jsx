@@ -18,7 +18,8 @@ const ProductComments = ({ productId }) => {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/comments/product/${productId}`);
+    const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
       if (response.ok) {
         const data = await response.json();
         setComments(data);
@@ -54,7 +55,7 @@ const ProductComments = ({ productId }) => {
     try {
       const user = JSON.parse(userData);
       
-      const response = await fetch('http://localhost:5001/api/comments', {
+      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app"; {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

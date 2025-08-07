@@ -61,7 +61,8 @@ function PopularProducts() {
     const fetchPopularProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5001/api/popular-products');
+      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
         
         if (!response.ok) {
           throw new Error('Popüler ürünler alınamadı');
@@ -84,7 +85,8 @@ function PopularProducts() {
 
     const fetchAllProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/products');
+     const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
         if (response.ok) {
           const data = await response.json();
           // İlk 10 ürünü popüler olarak göster

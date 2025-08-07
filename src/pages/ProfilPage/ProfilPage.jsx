@@ -60,7 +60,8 @@ const ProfilePage = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/users/${currentUserId}/profile`);
+    const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+const response = await fetch(`${API_URL}/api/categories`);
       const data = await response.json();
       
       if (data.success) {
@@ -86,7 +87,7 @@ const ProfilePage = () => {
 
   const fetchUserStats = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/users/${currentUserId}/stats`);
+     const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
       const data = await response.json();
       
       if (data.success) {
@@ -99,7 +100,7 @@ const ProfilePage = () => {
 
   const fetchUserAddresses = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/users/${currentUserId}/addresses`);
+      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
       const data = await response.json();
       
       if (data.success) {
@@ -120,7 +121,7 @@ const ProfilePage = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch(`http://localhost:5001/api/users/${currentUserId}/profile`, {
+      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app", {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileForm)
@@ -155,7 +156,7 @@ const ProfilePage = () => {
     }
     
     try {
-      const response = await fetch(`http://localhost:5001/api/users/${currentUserId}/change-password`, {
+     const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app"; {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -182,7 +183,7 @@ const ProfilePage = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch(`http://localhost:5001/api/users/${currentUserId}/username`, {
+   const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app"; {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newUsername: usernameForm.newUsername })
@@ -206,10 +207,7 @@ const ProfilePage = () => {
     e.preventDefault();
     
     try {
-      const url = addressEditMode && addressEditMode !== 'new'
-        ? `http://localhost:5001/api/users/${currentUserId}/addresses/${addressEditMode}`
-        : `http://localhost:5001/api/users/${currentUserId}/addresses`;
-      
+     const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
       const method = addressEditMode && addressEditMode !== 'new' ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
@@ -241,9 +239,7 @@ const ProfilePage = () => {
     if (!window.confirm('Bu adresi silmek istediğinizden emin misiniz?')) return;
     
     try {
-      const response = await fetch(`http://localhost:5001/api/users/${currentUserId}/addresses/${addressId}`, {
-        method: 'DELETE'
-      });
+      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
       
       const data = await response.json();
       
