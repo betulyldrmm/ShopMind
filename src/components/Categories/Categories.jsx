@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Categories.css';
@@ -28,6 +27,8 @@ const iconMap = {
   'FaAppleAlt': <FaAppleAlt />,
 };
 
+const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+
 function Categories() {
   const [categories, setCategories] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
@@ -36,18 +37,49 @@ function Categories() {
   const navigate = useNavigate();
 
   useEffect(() => {
-         const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
     const fetchCategories = async () => {
       console.log('🔍 API çağrısı başlıyor...');
       try {
-   
-const response = await fetch(`${API_URL}/api/categories`);
+        setLoading(true);
+        setError(null);
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
+        const response = await fetch(`${API_URL}/api/categories`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
         console.log('📡 Response status:', response.status);
         console.log('📡 Response ok:', response.ok);
-        
+                
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`Server hatası: ${response.status} - ${response.statusText}`);
         }
+        
+        const data = await response.json();
+        console.log('📦 Kategoriler alındı:', data);
+        setCategories(data || []);
+      } catch (error) {
+        console.error('❌ Kategoriler alınamadı:', error);
+        if (error.name === 'AbortError') {
+          setError('Bağlantı zaman aşımına uğradı');
+        } else {
+          setError(`Kategoriler yüklenemedi: ${error.message}`);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
         
         const data = await response.json();
         console.log('📦 API\'den gelen data:', data);

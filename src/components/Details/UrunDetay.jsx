@@ -18,7 +18,9 @@ import './UrunDetay.css';
 import ProductComments from "../../pages/ProductComments/ProductComments.jsx";
 import CommentSystem from '../../pages/CommentSystem.jsx';
 import Header2 from '../Header2/Header2.jsx';
-  const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+
+const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+
 const UrunDetay = () => {
   const { urunId } = useParams();
   const navigate = useNavigate();
@@ -31,7 +33,6 @@ const UrunDetay = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
 
-
   const productSizes = ['S', 'M', 'L', 'XL'];
   const productColors = [
     { name: 'Siyah', code: '#000000' },
@@ -40,25 +41,45 @@ const UrunDetay = () => {
     { name: 'Mavi', code: '#3B82F6' }
   ];
 
+  // Ürün detayını getir
   useEffect(() => {
     const fetchUrun = async () => {
       try {
         setLoading(true);
-    
-const response = await fetch(`${API_URL}/api/categories`);
+        setError(null);
+        
+        console.log('Ürün ID:', urunId);
+        console.log('API URL:', `${API_URL}/api/products/${urunId}`);
+        
+        // ✅ Doğru endpoint: /api/products/:id (kategoriler değil!)
+        const response = await fetch(`${API_URL}/api/products/${urunId}`);
+        
         if (!response.ok) {
-          throw new Error('Ürün bulunamadı');
+          const errorText = await response.text();
+          console.error('API Hatası:', response.status, errorText);
+          throw new Error(`Ürün bulunamadı (${response.status})`);
         }
         
         const data = await response.json();
-        console.log('Ürün detayı:', data);
-        console.log('Image URL:', data.image_url);
-        setUrun(data);
-        setError(null);
+        console.log('API Yanıtı:', data);
+        
+        // Backend'den gelen veri yapısına göre düzenle
+        if (data.success && data.data) {
+          setUrun(data.data);
+        } else if (data.id) {
+          // Direkt ürün verisi geldiyse
+          setUrun(data);
+        } else {
+          throw new Error('Ürün verisi alınamadı');
+        }
+        
+        console.log('Ürün detayı yüklendi:', data);
         setImageError(false);
+        
       } catch (error) {
         console.error('Ürün detayı alınamadı:', error);
         setError(error.message);
+        setUrun(null);
       } finally {
         setLoading(false);
       }
@@ -66,22 +87,30 @@ const response = await fetch(`${API_URL}/api/categories`);
 
     if (urunId) {
       fetchUrun();
+    } else {
+      setError('Ürün ID bulunamadı');
+      setLoading(false);
     }
   }, [urunId]);
 
-  
+  // Favoriler kontrolü
   useEffect(() => {
     if (urun?.id) {
       const savedFavorites = localStorage.getItem('favorites');
       if (savedFavorites) {
-        const favorites = new Set(JSON.parse(savedFavorites));
-        setIsFavorite(favorites.has(urun.id));
+        try {
+          const favorites = new Set(JSON.parse(savedFavorites));
+          setIsFavorite(favorites.has(urun.id));
+        } catch (error) {
+          console.error('Favoriler okunamadı:', error);
+        }
       }
     }
   }, [urun?.id]);
 
   const handleAdetChange = (type) => {
-    if (type === 'increase' && adet < urun.stock) {
+    const currentStock = urun.stock || 999;
+    if (type === 'increase' && adet < currentStock) {
       setAdet(adet + 1);
     } else if (type === 'decrease' && adet > 1) {
       setAdet(adet - 1);
@@ -89,22 +118,27 @@ const response = await fetch(`${API_URL}/api/categories`);
   };
 
   const toggleFavorite = () => {
-    const savedFavorites = localStorage.getItem('favorites');
-    const favorites = savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
-    
-    if (favorites.has(urun.id)) {
-      favorites.delete(urun.id);
-      setIsFavorite(false);
-    } else {
-      favorites.add(urun.id);
-      setIsFavorite(true);
+    try {
+      const savedFavorites = localStorage.getItem('favorites');
+      const favorites = savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
+      
+      if (favorites.has(urun.id)) {
+        favorites.delete(urun.id);
+        setIsFavorite(false);
+        console.log('Favorilerden çıkarıldı:', urun.name);
+      } else {
+        favorites.add(urun.id);
+        setIsFavorite(true);
+        console.log('Favorilere eklendi:', urun.name);
+      }
+      
+      localStorage.setItem('favorites', JSON.stringify([...favorites]));
+    } catch (error) {
+      console.error('Favori işlemi hatası:', error);
     }
-    
-    localStorage.setItem('favorites', JSON.stringify([...favorites]));
   };
 
   const sepeteEkle = () => {
-   
     const userData = localStorage.getItem('user');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     
@@ -123,15 +157,13 @@ const response = await fetch(`${API_URL}/api/categories`);
     }
     
     try {
-   
       const user = JSON.parse(userData);
-      console.log('Kullanıcı doğrulandı:', user.username);
+      console.log('Kullanıcı doğrulandı:', user.username || user.email);
       
-   
       const currentCart = JSON.parse(localStorage.getItem('sepet')) || [];
       console.log('Mevcut sepet:', currentCart);
       
- 
+      // Aynı ürün, boyut ve renk kombinasyonunu ara
       const existingItemIndex = currentCart.findIndex(item => 
         item.id === urun.id && 
         item.selectedSize === selectedSize && 
@@ -139,42 +171,40 @@ const response = await fetch(`${API_URL}/api/categories`);
       );
       
       if (existingItemIndex !== -1) {
-   
+        // Mevcut ürünün adedini artır
         const newQuantity = currentCart[existingItemIndex].adet + adet;
-    
-        if (newQuantity > urun.stock) {
-          alert(`Maksimum ${urun.stock} adet ekleyebilirsiniz. Sepetteki mevcut adet: ${currentCart[existingItemIndex].adet}`);
-          currentCart[existingItemIndex].adet = urun.stock;
+        const currentStock = urun.stock || 999;
+        
+        if (newQuantity > currentStock) {
+          alert(`Maksimum ${currentStock} adet ekleyebilirsiniz. Sepetteki mevcut adet: ${currentCart[existingItemIndex].adet}`);
+          currentCart[existingItemIndex].adet = currentStock;
         } else {
           currentCart[existingItemIndex].adet = newQuantity;
         }
         console.log('Mevcut ürün güncellendi:', currentCart[existingItemIndex]);
         
       } else {
-     
+        // Yeni ürün ekle
         const sepetItem = {
           id: urun.id,
-          name: urun.name,
-          price: parseFloat(urun.price),
+          name: urun.name || urun.title,
+          price: parseFloat(urun.price) || 0,
           adet: adet,
-          image_url: urun.image_url,
-          category_name: urun.category_name,
-          selectedSize: selectedSize,
-          selectedColor: selectedColor,
-          stock: urun.stock,
+          image_url: urun.image_url || urun.image,
+          category_name: urun.category_name || urun.category,
+          selectedSize: selectedSize || 'Standart',
+          selectedColor: selectedColor || 'Varsayılan',
+          stock: urun.stock || 999,
           addedDate: new Date().toISOString()
         };
         currentCart.push(sepetItem);
         console.log('Yeni ürün sepete eklendi:', sepetItem);
       }
       
-  
       localStorage.setItem('sepet', JSON.stringify(currentCart));
       console.log('Sepet localStorage\'a kaydedildi:', currentCart);
       
-   
-      alert(`✅ ${urun.name} sepete eklendi! (${adet} adet)\n\nSepet sayfasına yönlendiriliyorsunuz...`);
-      
+      alert(`✅ ${urun.name || urun.title} sepete eklendi! (${adet} adet)\n\nSepet sayfasına yönlendiriliyorsunuz...`);
       
       setTimeout(() => {
         navigate('/sepet');
@@ -182,7 +212,6 @@ const response = await fetch(`${API_URL}/api/categories`);
       
     } catch (error) {
       console.error('Sepete ekleme hatası:', error);
-     
       localStorage.removeItem('user');
       localStorage.removeItem('isLoggedIn');
       navigate('/authForm', {
@@ -192,7 +221,6 @@ const response = await fetch(`${API_URL}/api/categories`);
       });
     }
   };
-
 
   const getImageUrl = (imageUrl) => {
     if (!imageUrl) return '/spor.jpg';
@@ -228,10 +256,15 @@ const response = await fetch(`${API_URL}/api/categories`);
 
   if (loading) {
     return (
-      <div className="urun-detay-container">
-        <div className="loading-state">
-          <div className="loading-spinner"></div>
-          <p>Ürün detayları yükleniyor...</p>
+      <div className="min-h-screen bg-gray-50">
+        <Header2 />
+        <div className="urun-detay-container">
+          <div className="loading-state flex items-center justify-center py-16">
+            <div className="text-center">
+              <Package className="w-12 h-12 mx-auto mb-4 text-gray-400 animate-pulse" />
+              <p className="text-gray-600">Ürün detayları yükleniyor...</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -239,13 +272,18 @@ const response = await fetch(`${API_URL}/api/categories`);
 
   if (error || !urun) {
     return (
-      <div className="urun-bulunamadi">
-        <h2>Ürün Bulunamadı</h2>
-        <p>Aradığınız ürün mevcut değil veya kaldırılmış olabilir.</p>
-        <Link to="/urunler" className="geri-don-btn">
-          <ArrowLeft size={18} />
-          Ürünlere Geri Dön
-        </Link>
+      <div className="min-h-screen bg-gray-50">
+        <Header2 />
+        <div className="urun-bulunamadi container mx-auto px-4 py-16 text-center">
+          <Package className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Ürün Bulunamadı</h2>
+          <p className="text-gray-600 mb-6">Aradığınız ürün mevcut değil veya kaldırılmış olabilir.</p>
+          <p className="text-sm text-gray-500 mb-6">Hata: {error}</p>
+          <Link to="/urunler" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+            <ArrowLeft size={18} />
+            Ürünlere Geri Dön
+          </Link>
+        </div>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+
 const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
 
-const response = await fetch(`${API_URL}/api/categories`);
 const axios = {
   get: async (url, config = {}) => {
     const response = await fetch(url, {
@@ -12,20 +12,20 @@ const axios = {
       },
       signal: config.timeout ? AbortSignal.timeout(config.timeout) : undefined
     });
-    
+        
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ error: 'Server hatası' }));
-      throw { 
-        response: { 
-          status: response.status, 
-          data: errorData 
-        } 
+      throw {
+        response: {
+          status: response.status,
+          data: errorData
+        }
       };
     }
-    
+        
     return { data: await response.json() };
   },
-  
+    
   post: async (url, data, config = {}) => {
     const response = await fetch(url, {
       method: 'POST',
@@ -36,17 +36,17 @@ const axios = {
       body: JSON.stringify(data),
       signal: config.timeout ? AbortSignal.timeout(config.timeout) : undefined
     });
-    
+        
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ error: 'Server hatası' }));
-      throw { 
-        response: { 
-          status: response.status, 
-          data: errorData 
-        } 
+      throw {
+        response: {
+          status: response.status,
+          data: errorData
+        }
       };
     }
-    
+        
     return { data: await response.json() };
   }
 };
@@ -57,7 +57,7 @@ function AuthForm() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [serverStatus, setServerStatus] = useState('Kontrol edilmedi');
-  
+    
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -67,35 +67,41 @@ function AuthForm() {
   }, []);
 
   const checkUserLogin = () => {
-    const userData = localStorage.getItem('user');
-    const loginStatus = localStorage.getItem('isLoggedIn');
-    
-    if (userData && loginStatus === 'true') {
-      try {
-        const parsedUser = JSON.parse(userData);
-        setUser(parsedUser);
-        setIsLoggedIn(true);
-      } catch (error) {
-        localStorage.removeItem('user');
-        localStorage.removeItem('isLoggedIn');
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem('user');
+      const loginStatus = localStorage.getItem('isLoggedIn');
+        
+      if (userData && loginStatus === 'true') {
+        try {
+          const parsedUser = JSON.parse(userData);
+          setUser(parsedUser);
+          setIsLoggedIn(true);
+        } catch (error) {
+          localStorage.removeItem('user');
+          localStorage.removeItem('isLoggedIn');
+        }
       }
     }
   };
 
   const checkServerStatus = async () => {
     try {
-     const response = await fetch(`${API_URL}/api/products`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const response = await fetch(`${API_URL}/api/products`, {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
       setServerStatus('✅ Server aktif');
     } catch (error) {
       if (error.name === 'AbortError') {
         setServerStatus('❌ Timeout');
         setMessage('❌ Server yanıt vermiyor (timeout)');
-      } else if (error.message.includes('fetch')) {
-        setServerStatus('❌ Server kapalı');
-        setMessage('❌ Server kapalı - node server.js ile başlatın');
       } else {
-        setServerStatus('❌ Hata');
-        setMessage(`❌ Server hatası: ${error.message}`);
+        setServerStatus('❌ Server ulaşılamıyor');
+        setMessage('❌ Server bağlantı hatası');
       }
     }
   };

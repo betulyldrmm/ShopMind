@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import './Nostalji.css';
+
 const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
-const response = await fetch(`${API_URL}/api/categories`);
 
 // Büyükbabaya hediye kategorileri (UI için)
 const categories = {
   'nostaljik-eglence': { name: '📻 Nostaljik Eğlence', color: '#8B4513' },
   'konfor-saglik': { name: '🪑 Konfor & Sağlık', color: '#2F4F4F' },
   'hobi-koleksiyon': { name: '🎯 Hobi & Koleksiyon', color: '#8B0000' },
-  'kitap-kultur': { name: '📚 Kitap & Kültür', color: '#4682B4' }
- 
-  
+  'kitap-kultur': { name: '📚 Kitap & Kültür', color: '#4682B4' }     
 };
 
 const Nostalji = () => {
@@ -23,7 +21,7 @@ const Nostalji = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  
+    
   // Yeni state'ler - veritabanı için
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,57 +30,107 @@ const Nostalji = () => {
 
   useEffect(() => {
     // Kullanıcı bilgilerini kontrol et
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error('Kullanıcı verisi okunamadı:', error);
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        try {
+          setUser(JSON.parse(userData));
+        } catch (error) {
+          console.error('Kullanıcı verisi okunamadı:', error);
+        }
       }
     }
 
     if (subcategoryId && categories[subcategoryId]) {
       setSelectedCategory(subcategoryId);
     }
-    
+        
     // Sepet sayısını güncelle
     updateCartCount();
-    
+        
     // Ürünleri çek
     fetchBuyukbabaProducts();
   }, [subcategoryId]);
 
+  const updateCartCount = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        setCartCount(totalCount);
+      } catch (error) {
+        console.error('Sepet sayısı hesaplanamadı:', error);
+        setCartCount(0);
+      }
+    }
+  };
+
+  const fetchBuyukbabaProducts = async () => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const response = await fetch(`${API_URL}/api/products/category/buyukbaba`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`Server hatası: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setProducts(data || []);
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        setError('Bağlantı zaman aşımına uğradı');
+      } else {
+        setError(`Ürünler yüklenemedi: ${error.message}`);
+      }
+      console.error('Ürün yükleme hatası:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Resim URL'sini düzelt
   const fixImageUrl = (imageUrl) => {
     if (!imageUrl) return '/default-product.png';
-    
+        
     // Eğer http ile başlıyorsa olduğu gibi bırak
     if (imageUrl.startsWith('http')) {
       return imageUrl;
     }
-    
+        
     // /images/ ile başlıyorsa sadece dosya adını al
     if (imageUrl.startsWith('/images/')) {
       const fileName = imageUrl.replace('/images/', '');
       return `/${fileName}`;
     }
-    
+        
     // images/ ile başlıyorsa sadece dosya adını al
     if (imageUrl.startsWith('images/')) {
       const fileName = imageUrl.replace('images/', '');
       return `/${fileName}`;
     }
-    
+        
     // Zaten / ile başlıyorsa olduğu gibi bırak
     if (imageUrl.startsWith('/')) {
       return imageUrl;
     }
-    
+        
     // Hiçbiri değilse başına / ekle
     return `/${imageUrl}`;
   };
-
-  // fetchBuyukbabaProducts fonksiyonu - Arac.jsx örneğine göre düzeltildi
+ 
   const fetchBuyukbabaProducts = async () => {
     try {
       setLoading(true);

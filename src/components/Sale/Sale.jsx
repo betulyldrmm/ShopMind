@@ -1,7 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Heart, ShoppingCart, Star, ChevronLeft, ChevronRight, Tag, Clock } from 'lucide-react';
 import './Sale.css';
+
 const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+
 const Sale = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [favorites, setFavorites] = useState(new Set());
@@ -10,24 +14,52 @@ const Sale = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // ✅ İndirimli ürünleri getir - DOĞRU ENDPOINT
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-       
-const response = await fetch(`${API_URL}/api/categories`);
-
+        
+        console.log('İndirimli ürünler için API çağrısı yapılıyor...');
+        console.log('API URL:', `${API_URL}/api/products`);
+        
+        // ✅ Doğru endpoint: /api/products (kategoriler değil!)
+        const response = await fetch(`${API_URL}/api/products`);
+         
         if (!response.ok) {
-          throw new Error('İndirimli ürünler yüklenemedi');
+          const errorText = await response.text();
+          console.error('API Hatası:', response.status, errorText);
+          throw new Error(`İndirimli ürünler yüklenemedi (${response.status})`);
         }
-
+         
         const data = await response.json();
-        console.log('🔥 API\'den gelen indirimli ürünler:', data);
-
-       
-        const formattedProducts = data.map(product => {
+        console.log('🔥 API\'den gelen ürünler:', data);
+        
+        let productsArray = [];
+        
+        // Backend'den gelen veri yapısına göre parse et
+        if (data.success && data.data) {
+          if (Array.isArray(data.data)) {
+            productsArray = data.data;
+          } else if (data.data.products && Array.isArray(data.data.products)) {
+            productsArray = data.data.products;
+          }
+        } else if (Array.isArray(data)) {
+          productsArray = data;
+        }
+        
+        console.log('İşlenmiş ürünler:', productsArray);
+                 
+        const formattedProducts = productsArray.map(product => {
           console.log(`Ürün ${product.id} - Image URL: ${product.image_url}`);
           
+          // Rastgele indirim oranı ekle (eğer yoksa)
+          const discountRate = product.discount || (Math.random() > 0.5 ? Math.floor(Math.random() * 50) + 10 : 0);
+          const originalPrice = product.price;
+         
+          const discountedPrice = discountRate > 0 
+            ? (originalPrice * (1 - discountRate / 100)).toFixed(2)
+            : originalPrice;
           return {
             id: product.id,
             brand: product.name,
