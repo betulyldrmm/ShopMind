@@ -5,12 +5,11 @@ import './Nostalji.css';
 
 import { API_URL } from '../../config/api';
 
-// Büyükbabaya hediye kategorileri (UI için)
 const categories = {
   'nostaljik-eglence': { name: '📻 Nostaljik Eğlence', color: '#8B4513' },
   'konfor-saglik': { name: '🪑 Konfor & Sağlık', color: '#2F4F4F' },
   'hobi-koleksiyon': { name: '🎯 Hobi & Koleksiyon', color: '#8B0000' },
-  'kitap-kultur': { name: '📚 Kitap & Kültür', color: '#4682B4' }     
+  'kitap-kultur': { name: '📚 Kitap & Kültür', color: '#4682B4' }
 };
 
 const Nostalji = () => {
@@ -21,15 +20,12 @@ const Nostalji = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-    
-  // Yeni state'ler - veritabanı için
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Kullanıcı bilgilerini kontrol et
     if (typeof window !== 'undefined') {
       const userData = localStorage.getItem('user');
       if (userData) {
@@ -44,234 +40,11 @@ const Nostalji = () => {
     if (subcategoryId && categories[subcategoryId]) {
       setSelectedCategory(subcategoryId);
     }
-        
-    // Sepet sayısını güncelle
+
     updateCartCount();
-        
-    // Ürünleri çek
     fetchBuyukbabaProducts();
   }, [subcategoryId]);
 
-  const updateCartCount = () => {
-    if (typeof window !== 'undefined') {
-      try {
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-        setCartCount(totalCount);
-      } catch (error) {
-        console.error('Sepet sayısı hesaplanamadı:', error);
-        setCartCount(0);
-      }
-    }
-  };
-
-  const fetchBuyukbabaProducts = async () => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      
-      const response = await fetch(`${API_URL}/api/products/category/buyukbaba`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        throw new Error(`Server hatası: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setProducts(data || []);
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        setError('Bağlantı zaman aşımına uğradı');
-      } else {
-        setError(`Ürünler yüklenemedi: ${error.message}`);
-      }
-      console.error('Ürün yükleme hatası:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Resim URL'sini düzelt
-  const fixImageUrl = (imageUrl) => {
-    if (!imageUrl) return '/default-product.png';
-        
-    // Eğer http ile başlıyorsa olduğu gibi bırak
-    if (imageUrl.startsWith('http')) {
-      return imageUrl;
-    }
-        
-    // /images/ ile başlıyorsa sadece dosya adını al
-    if (imageUrl.startsWith('/images/')) {
-      const fileName = imageUrl.replace('/images/', '');
-      return `/${fileName}`;
-    }
-        
-    // images/ ile başlıyorsa sadece dosya adını al
-    if (imageUrl.startsWith('images/')) {
-      const fileName = imageUrl.replace('images/', '');
-      return `/${fileName}`;
-    }
-        
-    // Zaten / ile başlıyorsa olduğu gibi bırak
-    if (imageUrl.startsWith('/')) {
-      return imageUrl;
-    }
-        
-    // Hiçbiri değilse başına / ekle
-    return `/${imageUrl}`;
-  };
- 
-  const fetchBuyukbabaProducts = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      
-      console.log('Büyükbabaya hediye ürünleri API çağrısı başlıyor...');
-      
-      let fetchedProducts = [];
-      
-      try {
-        console.log('Büyükbabaya hediye ürünleri çekiliyor...');
-        const response = await fetch(`${API_BASE_URL}/api/products`);
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log('API yanıtı:', data);
-          
-          let allProducts = [];
-          
-          // Farklı response formatlarını destekle
-          if (Array.isArray(data)) {
-            allProducts = data;
-          } else if (data.data && Array.isArray(data.data)) {
-            allProducts = data.data;
-          } else if (data.products && Array.isArray(data.products)) {
-            allProducts = data.products;
-          } else if (data.success && data.data && Array.isArray(data.data)) {
-            allProducts = data.data;
-          } else {
-            console.warn('Beklenmeyen API yanıt formatı:', data);
-            allProducts = [];
-          }
-          
-          console.log('Toplam ürün sayısı:', allProducts.length);
-          
-          // BÜYÜKBABAנA HEDİYE ÜRÜNLERİNİ FİLTRELE - Kategori ID veya içerik bazlı
-          // Önce büyükbaba/nostaljik ile ilgili ürünleri bul
-          fetchedProducts = allProducts.filter(product => {
-            const name = (product.name || '').toLowerCase();
-            const desc = (product.description || '').toLowerCase();
-            
-            // Büyükbaba/nostaljik anahtar kelimeler
-            const nostaljikKeywords = [
-              'nostaljik', 'nostalji', 'büyükbaba', 'buyukbaba', 'dede',
-              'vintage', 'retro', 'klasik', 'geçmiş', 'gecmis',
-              'hatıra', 'hatira', 'anı', 'ani', 'radyo', 'plak',
-              'gramofon', 'müzik', 'muzik', 'kitap', 'satranç', 'satrenc',
-              'puzzle', 'oyun', 'masa', 'lamba', 'saat', 'çerçeve', 'cerceve',
-              'fotoğraf', 'fotograf', 'yastık', 'yastigı', 'konfor',
-              'termos', 'bardak', 'masaj'
-            ];
-            
-            const isBuyukbabaProduct = nostaljikKeywords.some(keyword => 
-              name.includes(keyword) || desc.includes(keyword)
-            );
-            
-            if (isBuyukbabaProduct) {
-              console.log('✅ Büyükbaba ürünü bulundu:', product.id, '-', product.name);
-            }
-            
-            return isBuyukbabaProduct;
-          });
-          
-          console.log(`🎯 Anahtar Kelime Filtresi Sonucu: ${fetchedProducts.length} büyükbaba ürünü bulundu`);
-          
-          // Eğer anahtar kelime ile bulunamadıysa, kategori ID bazlı arama yap
-          if (fetchedProducts.length === 0) {
-            console.log('Anahtar kelime ile bulunamadı, kategori ID ile deneniyor...');
-            
-            // Kategori ID 1 ile dene (büyükbaba kategorisi olabilir)
-            fetchedProducts = allProducts.filter(product => {
-              const categoryId = parseInt(product.category_id);
-              return categoryId === 1;
-            });
-            
-            console.log(`Kategori ID 1 ile ${fetchedProducts.length} ürün bulundu`);
-          }
-          
-          // Hala bulunamadıysa, ID aralığı ile dene
-          if (fetchedProducts.length === 0) {
-            console.log('Kategori ID ile bulunamadı, ID aralığı ile deneniyor...');
-            
-            fetchedProducts = allProducts.filter(product => {
-              const productId = parseInt(product.id);
-              // Genel olarak kullanılabilecek ID aralıkları
-              return (productId >= 1 && productId <= 50) || 
-                     (productId >= 100 && productId <= 150) ||
-                     (productId >= 200 && productId <= 250);
-            }).slice(0, 15); // İlk 15 ürünü al
-            
-            console.log(`ID aralığı ile ${fetchedProducts.length} ürün bulundu`);
-          }
-          
-          // Son çare: ilk 15 ürünü al
-          if (fetchedProducts.length === 0 && allProducts.length > 0) {
-            console.log('Hiçbir filtre işe yaramadı, ilk 15 ürün alınıyor...');
-            fetchedProducts = allProducts.slice(0, 15);
-          }
-          
-          // Resim URL'lerini düzelt
-          fetchedProducts = fetchedProducts.map(product => ({
-            ...product,
-            image_url: fixImageUrl(product.image_url)
-          }));
-          
-          // ID'ye göre sırala
-          fetchedProducts.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-          
-          console.log('Filtrelenmiş ve sıralanmış büyükbaba ürünleri:', fetchedProducts.slice(0, 5).map(p => ({
-            id: p.id, 
-            name: p.name,
-            category_id: p.category_id
-          })));
-          
-        } else {
-          throw new Error(`API yanıt hatası: ${response.status}`);
-        }
-        
-      } catch (apiError) {
-        console.error('API çağrısı başarısız:', apiError);
-        setError(`API bağlantı hatası: ${apiError.message}`);
-      }
-      
-      setProducts(fetchedProducts);
-      
-      if (fetchedProducts.length === 0) {
-        setError('Büyükbabaya hediye ürünü bulunamadı. Veritabanında uygun ürün bulunmuyor.');
-      } else {
-        console.log(`🎉 ${fetchedProducts.length} büyükbaba ürünü başarıyla yüklendi`);
-      }
-      
-    } catch (error) {
-      console.error('fetchBuyukbabaProducts genel hatası:', error);
-      setError(`Ürünler yüklenirken hata: ${error.message}`);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Sepet sayısını güncelle
   const updateCartCount = () => {
     try {
       const sepetData = localStorage.getItem('sepet');
@@ -290,6 +63,35 @@ const Nostalji = () => {
     }
   };
 
+  const fixImageUrl = (imageUrl) => {
+    if (!imageUrl) return '/default-product.png';
+    if (imageUrl.startsWith('http')) return imageUrl;
+    if (imageUrl.startsWith('/images/')) return `/${imageUrl.replace('/images/', '')}`;
+    if (imageUrl.startsWith('images/')) return `/${imageUrl.replace('images/', '')}`;
+    return imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+  };
+
+  const fetchBuyukbabaProducts = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${API_URL}/api/products/category/buyukbaba`);
+      if (!response.ok) throw new Error(`Server hatası: ${response.status}`);
+      const data = await response.json();
+      const fixedProducts = (data || []).map(product => ({
+        ...product,
+        image_url: fixImageUrl(product.image_url)
+      }));
+      setProducts(fixedProducts);
+    } catch (error) {
+      setError(`Ürünler yüklenemedi: ${error.message}`);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCategoryChange = (categoryKey) => {
     setSelectedCategory(categoryKey);
     window.history.pushState({}, '', `/buyukbaba/${categoryKey}`);
@@ -297,20 +99,12 @@ const Nostalji = () => {
 
   const toggleFavorite = (productId) => {
     const newFavorites = new Set(favorites);
-    if (newFavorites.has(productId)) {
-      newFavorites.delete(productId);
-    } else {
-      newFavorites.add(productId);
-    }
+    newFavorites.has(productId) ? newFavorites.delete(productId) : newFavorites.add(productId);
     setFavorites(newFavorites);
   };
 
   const openProductDetail = (product) => {
-    setSelectedProduct({
-      ...product,
-      category: selectedCategory,
-      categoryName: categories[selectedCategory].name
-    });
+    setSelectedProduct({ ...product, category: selectedCategory, categoryName: categories[selectedCategory].name });
     setIsModalOpen(true);
   };
 
@@ -320,22 +114,13 @@ const Nostalji = () => {
   };
 
   const addToCart = (product, event) => {
-    // Event bubbling'i durdur
-    if (event) {
-      event.stopPropagation();
-    }
-
-    if (!user) {
-      alert('Sepete eklemek için giriş yapmalısınız!');
-      return;
-    }
+    if (event) event.stopPropagation();
+    if (!user) return alert('Sepete eklemek için giriş yapmalısınız!');
 
     try {
-      
       const existingSepet = localStorage.getItem('sepet');
       let sepetItems = existingSepet ? JSON.parse(existingSepet) : [];
 
-      // Ürün formatını Sepet.jsx'e uygun hale getir
       const cartItem = {
         id: `buyukbaba-${product.id}`,
         name: product.name,
@@ -352,25 +137,18 @@ const Nostalji = () => {
         description: product.description
       };
 
-      // Aynı ürün var mı kontrol et
       const existingItemIndex = sepetItems.findIndex(item => item.id === cartItem.id);
 
       if (existingItemIndex !== -1) {
-        // Mevcut ürünün adedini artır
         sepetItems[existingItemIndex].adet = (parseInt(sepetItems[existingItemIndex].adet) || 1) + 1;
         sepetItems[existingItemIndex].quantity = sepetItems[existingItemIndex].adet;
       } else {
-        // Yeni ürün ekle
         sepetItems.push(cartItem);
       }
 
-      // Sepeti localStorage'a kaydet
       localStorage.setItem('sepet', JSON.stringify(sepetItems));
-      
-      // Sepet sayısını güncelle
       updateCartCount();
 
-      // Başarı bildirimi
       const notification = document.createElement('div');
       notification.className = 'cart-notification';
       notification.textContent = `${product.name} büyükbaba hediye sepetine eklendi! 👴`;
@@ -386,20 +164,19 @@ const Nostalji = () => {
         animation: slideInRight 0.3s ease;
       `;
       document.body.appendChild(notification);
-      
+
       setTimeout(() => {
         if (document.body.contains(notification)) {
           document.body.removeChild(notification);
         }
       }, 3000);
 
-      console.log('Büyükbaba sepetine eklendi:', product.name);
-      
     } catch (error) {
       console.error('Sepete ekleme hatası:', error);
       alert('Ürün sepete eklenirken bir hata oluştu.');
     }
   };
+
 
   const handleProductClick = (product) => {
     // Ürün detay sayfasına ID ile yönlendir
