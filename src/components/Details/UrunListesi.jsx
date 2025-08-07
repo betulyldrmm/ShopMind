@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
 import './UrunListesi.css';
 
-import { API_URL } from '../config/api';
+import { API_URL } from '../../config/api';
 
 const UrunListesi = () => {
   const [urunler, setUrunler] = useState([]);
