@@ -1,8 +1,8 @@
-// components/ProductComments/ProductComments.jsx
 import React, { useState, useEffect } from 'react';
 import { Send, User } from 'lucide-react';
 import './ProductComments.css';
-import { API_URL } from '../..config/api';
+import { API_URL } from '../../config/api';
+
 const ProductComments = ({ productId }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -18,8 +18,7 @@ const ProductComments = ({ productId }) => {
 
   const fetchComments = async () => {
     try {
- 
-const response = await fetch(`${API_URL}/api/categories`);
+      const response = await fetch(`${API_URL}/api/comments?productId=${productId}`);
       if (response.ok) {
         const data = await response.json();
         setComments(data);
@@ -35,11 +34,11 @@ const response = await fetch(`${API_URL}/api/categories`);
 
   const submitComment = async (e) => {
     e.preventDefault();
-    
+
     // Kullanıcı kontrolü
     const userData = localStorage.getItem('user');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    
+
     if (!userData || isLoggedIn !== 'true') {
       alert('Yorum yapmak için giriş yapmalısınız!');
       return;
@@ -54,8 +53,8 @@ const response = await fetch(`${API_URL}/api/categories`);
 
     try {
       const user = JSON.parse(userData);
-      
-      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app"; {
+
+      const response = await fetch(`${API_URL}/api/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,8 +63,8 @@ const response = await fetch(`${API_URL}/api/categories`);
           product_id: productId,
           user_id: user.id || user.username,
           username: user.username,
-          comment: newComment.trim()
-        })
+          comment: newComment.trim(),
+        }),
       });
 
       if (response.ok) {
@@ -94,7 +93,7 @@ const response = await fetch(`${API_URL}/api/categories`);
         month: 'long',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       });
     } catch (error) {
       return 'Tarih bilinmiyor';
