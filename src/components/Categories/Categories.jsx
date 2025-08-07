@@ -16,19 +16,17 @@ import {
 } from 'react-icons/fa';
 
 const iconMap = {
-  'FaTshirt': <FaTshirt />,
-  'FaMobileAlt': <FaMobileAlt />,
-  'FaChild': <FaChild />,
-  'FaBaby': <FaBaby />,
-  'FaHome': <FaHome />,
-  'FaFootballBall': <FaFootballBall />,
-  'FaSprayCan': <FaSprayCan />,
-  'FaBook': <FaBook />,
-  'FaCar': <FaCar />,
-  'FaAppleAlt': <FaAppleAlt />,
+  FaTshirt: <FaTshirt />,
+  FaMobileAlt: <FaMobileAlt />,
+  FaChild: <FaChild />,
+  FaBaby: <FaBaby />,
+  FaHome: <FaHome />,
+  FaFootballBall: <FaFootballBall />,
+  FaSprayCan: <FaSprayCan />,
+  FaBook: <FaBook />,
+  FaCar: <FaCar />,
+  FaAppleAlt: <FaAppleAlt />,
 };
-
-
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -43,30 +41,42 @@ function Categories() {
       try {
         setLoading(true);
         setError(null);
-        
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
-        
+
         const response = await fetch(`${API_URL}/api/categories`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
-          signal: controller.signal
+          signal: controller.signal,
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         console.log('📡 Response status:', response.status);
         console.log('📡 Response ok:', response.ok);
-                
+
         if (!response.ok) {
           throw new Error(`Server hatası: ${response.status} - ${response.statusText}`);
         }
-        
+
         const data = await response.json();
         console.log('📦 Kategoriler alındı:', data);
-        setCategories(data || []);
+
+        // API yapısına göre kontrol
+        if (data.success && Array.isArray(data.data)) {
+          setCategories(data.data);
+          setError(null);
+        } else if (Array.isArray(data)) {
+          setCategories(data);
+          setError(null);
+        } else {
+          setCategories([]);
+          setError(data.message || 'Kategoriler yüklenemedi');
+          console.log('❌ API başarısız veya veri formatı hatalı:', data.message || 'Bilinmeyen hata');
+        }
       } catch (error) {
         console.error('❌ Kategoriler alınamadı:', error);
         if (error.name === 'AbortError') {
@@ -74,34 +84,6 @@ function Categories() {
         } else {
           setError(`Kategoriler yüklenemedi: ${error.message}`);
         }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-        
-        const data = await response.json();
-        console.log('📦 API\'den gelen data:', data);
-        
-      
-        if (data.success && Array.isArray(data.data)) {
-          console.log('✅ Kategoriler başarıyla alındı:', data.data);
-          setCategories(data.data);
-          setError(null);
-        } else if (Array.isArray(data)) {
-          console.log('✅ Kategoriler direkt dizi olarak alındı:', data);
-          setCategories(data);
-          setError(null);
-        } else {
-          console.log('❌ API başarısız veya veri formatı hatalı:', data.message || 'Bilinmeyen hata');
-          setError(data.message || 'Kategoriler yüklenemedi');
-          setCategories([]);
-        }
-      } catch (error) {
-        console.error('💥 Kategoriler yüklenemedi:', error);
-        setError('Kategoriler yüklenirken bir hata oluştu: ' + error.message);
         setCategories([]);
       } finally {
         setLoading(false);
@@ -116,7 +98,6 @@ function Categories() {
   console.log('🎯 Current state - loading:', loading);
   console.log('🎯 Current state - error:', error);
 
-
   const handleCategoryClick = (categorySlug) => {
     console.log('🖱️ Kategori tıklandı:', categorySlug);
     navigate(`/kategori/${categorySlug}`);
@@ -127,11 +108,11 @@ function Categories() {
     navigate(`/kategori/${categorySlug}/${subCategorySlug}`);
   };
 
-
   const handleRetry = () => {
     setLoading(true);
     setError(null);
-   
+    // Tekrar fetch etmek için fetchCategories'yi burada çağırabiliriz ya da sayfayı yenile
+    // fetchCategories();  // Ancak fetchCategories useEffect içinde tanımlı, dışarıya çıkarabiliriz istersen
     window.location.reload();
   };
 
@@ -151,7 +132,6 @@ function Categories() {
       </div>
     );
   }
-
   if (categories.length === 0) {
     console.log('📭 Kategoriler boş!');
     return (
