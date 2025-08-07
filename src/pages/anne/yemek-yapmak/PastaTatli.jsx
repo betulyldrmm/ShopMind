@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import './PastaTatli.css';
-import { API_URL } from '../../config/api';
+import { API_URL } from '../../../config/api'; // ✅ Doğru
+
 
 
 // Kategori bilgileri (UI için)

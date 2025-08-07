@@ -6,7 +6,7 @@ import { Heart, ShoppingCart } from 'lucide-react';
 import './Arac.css';
 
 // ✅ API URL'yi doğru tanımla
-import { API_URL } from '../../config/api';
+import { API_URL } from '../../../config/api';
 
 // Araç kategorileri (UI için)
 const categories = {

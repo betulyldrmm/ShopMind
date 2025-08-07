@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import './Nostalji.css';
 
-import { API_URL } from '../../config/api';
+import { API_URL } from '../../../config/api';
 
 const categories = {
   'nostaljik-eglence': { name: '📻 Nostaljik Eğlence', color: '#8B4513' },

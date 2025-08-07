@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import './Dikis.css';
 
-import { API_URL } from '../../config/api';
+import { API_URL } from '../../../config/api'; // ✅ Doğru
+
 const response = await fetch(`${API_URL}/api/categories`);
 
 
