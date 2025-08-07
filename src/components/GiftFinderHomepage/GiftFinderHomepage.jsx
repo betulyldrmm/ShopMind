@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import './GiftFinderHomePage.css';
+import './GiftFinderHomepage.css';
 import Header2 from '../Header2/Header2';
-
+// import "./GiftFinderHomePage.css"  // Comment yap
 const recipients = [
   {
     id: 'anne',
