@@ -38,7 +38,7 @@ const recipients = [
         id: 'otomobil-esyalari',
         name: 'Otomobil Eşyaları',
         subcategories: [
-          { id: 'arac-ici', name: 'TÜM ARAÇ EŞYALARI', path: '/baba/otomobil/arac' },
+          { id: 'arac-ici', name: 'TÜM ARAÇ EŞYALARI', path: '/baba/otomobil/Arac' },
           
         ]
       }

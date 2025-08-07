@@ -20,7 +20,7 @@ import ProfilePage from './pages/ProfilPage/ProfilPage';
 import Stores from './pages/About/Stores';
 import About from './pages/About/About';
 import Contact from './pages/About/Contact';
-import Arac from './pages/baba/otomobil/arac';
+import Arac from './pages/baba/otomobil/Arac';
 import Nostalji from './pages/BuyukBaba/Nostalji/Nostalji';
 function App() {
   return (
@@ -48,7 +48,7 @@ function App() {
       <Route path='/About' element={<About/>}/>
       <Route path='/Stores' element={<Stores/>}/>
       <Route path='/Contact' element={<Contact/>}/>
-      <Route path='/baba/otomobil/arac' element={<Arac/>}/>
+      <Route path='/baba/otomobil/Arac' element={<Arac/>}/>
       <Route path='/buyukBaba/nostalji/nostalji' element={<Nostalji/>}/>
       </Routes>
     </BrowserRouter>
