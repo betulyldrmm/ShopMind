@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SporaBasla.css';
 import Header2 from '../../components/Header2/Header2';
-import { API_URL } from '../config/api';
+import { API_URL } from '../../config/api';
 const SporaBasla = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
