@@ -16,7 +16,6 @@ const CommentSystem = ({ productId }) => {
   const [error, setError] = useState(null);
 
 
-const response = await fetch(`${API_URL}/api/categories`);
 
   // ProductId'yi doğrula ve düzelt
   const validateProductId = (id) => {
@@ -206,21 +205,19 @@ const response = await fetch(`${API_URL}/api/categories`);
   };
 
   useEffect(() => {
-    const initializeData = async () => {
-      const validatedProductId = validateProductId(productId);
-      
-      if (!validatedProductId) {
-        setTimeout(async () => {
-          const retryProductId = validateProductId(productId);
-          if (retryProductId) {
-            await initializeData();
-          } else {
-            setError(`Ürün ID bulunamadı. URL kontrol edin: ${window.location.href}`);
-            setIsLoading(false);
-          }
-        }, 2000);
-        return;
-      }
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/categories`);
+      const data = await response.json();
+      setCategories(data); // örnek
+    } catch (error) {
+      console.error("Kategoriler alınamadı:", error);
+    }
+  };
+
+  fetchCategories(); // fonksiyonu çağır
+}, []);
+
 
       const apiConnected = await testApiConnection();
       if (!apiConnected) {
