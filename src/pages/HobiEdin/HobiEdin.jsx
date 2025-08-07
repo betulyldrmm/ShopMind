@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './HobiEdin.css';
 import Header2 from '../../components/Header2/Header2';
 const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
-const response = await fetch(`${API_URL}/api/categories`);
+
 const HobiEdin = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -43,7 +43,7 @@ const HobiEdin = () => {
       setLoading(true);
       
   
-      const response = await fetch(`${API_BASE_URL}/api/categories/9/products`);
+  const response = await fetch(`${API_URL}/api/categories`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

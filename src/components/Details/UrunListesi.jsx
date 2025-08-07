@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
 import './UrunListesi.css';
-
+   const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
 const UrunListesi = () => {
   const [urunler, setUrunler] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ const UrunListesi = () => {
     const fetchUrunler = async () => {
       try {
         setLoading(true);
-       const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+    
 const response = await fetch(`${API_URL}/api/categories`);
         
         if (!response.ok) {

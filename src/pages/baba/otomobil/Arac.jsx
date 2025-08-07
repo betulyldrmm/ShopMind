@@ -1,9 +1,13 @@
+// Arac.jsx - API çağrılarını düzelt
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import './Arac.css';
+
+// ✅ API URL'yi doğru tanımla
 const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
-const response = await fetch(`${API_URL}/api/categories`);
+
 // Araç kategorileri (UI için)
 const categories = {
   'motor-yagi': { name: '🛢️ Motor Yağı', color: '#ff6b9d' },
@@ -81,7 +85,7 @@ const Arac = () => {
     return `/${imageUrl}`;
   };
 
-  // fetchAracProducts fonksiyonunu güncelleyelim - Kategori ID 7
+  // ✅ fetchAracProducts fonksiyonunu düzelt - Kategori ID 7
   const fetchAracProducts = async () => {
     try {
       setLoading(true);
@@ -93,7 +97,8 @@ const Arac = () => {
       
       try {
         console.log('Kategori 7 ürünleri çekiliyor...');
-        const response = await fetch(`${API_BASE_URL}/api/products`);
+        // ✅ API_URL kullan, API_BASE_URL değil
+        const response = await fetch(`${API_URL}/api/products`);
         
         if (response.ok) {
           const data = await response.json();

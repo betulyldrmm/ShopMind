@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CommentSystem.css';
-
+ const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
 const CommentSystem = ({ productId }) => {
   const [analyticsData, setAnalyticsData] = useState({
     overview: null,
@@ -15,7 +15,7 @@ const CommentSystem = ({ productId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
- const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+
 const response = await fetch(`${API_URL}/api/categories`);
 
   // ProductId'yi doğrula ve düzelt

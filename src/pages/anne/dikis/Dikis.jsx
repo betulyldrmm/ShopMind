@@ -457,7 +457,11 @@ const Dikis = () => {
           <p>{error}</p>
           <div className="error-details">
             <p>🔍 Kontrol edilecekler:</p>
-           
+            <ul>
+              <li>Server çalışıyor mu? (http://localhost:5001)</li>
+              <li>Dikiş ürün ID'leri (432-450) veritabanında var mı?</li>
+              <li>API endpoint'i doğru çalışıyor mu?</li>
+            </ul>
           </div>
           <button onClick={fetchDikisProducts} className="retry-btn">
             🔄 Tekrar Dene
@@ -621,6 +625,7 @@ const Dikis = () => {
 
      
       
+      {/* Ürün Detay Modal */}
       {isModalOpen && selectedProduct && (
         <div className="modal-overlay" onClick={closeProductDetail}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

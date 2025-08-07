@@ -36,10 +36,11 @@ function Categories() {
   const navigate = useNavigate();
 
   useEffect(() => {
+         const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
     const fetchCategories = async () => {
       console.log('🔍 API çağrısı başlıyor...');
       try {
-        const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+   
 const response = await fetch(`${API_URL}/api/categories`);
         console.log('📡 Response status:', response.status);
         console.log('📡 Response ok:', response.ok);

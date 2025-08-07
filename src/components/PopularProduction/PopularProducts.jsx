@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import './PopularProducts.css';
-
+ const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
 function PopularProducts() {
   const [popularProducts, setPopularProducts] = useState([]);
   const [favorites, setFavorites] = useState(new Set());
@@ -61,7 +61,7 @@ function PopularProducts() {
     const fetchPopularProducts = async () => {
       try {
         setLoading(true);
-      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+     
 const response = await fetch(`${API_URL}/api/categories`);
         
         if (!response.ok) {
@@ -85,7 +85,7 @@ const response = await fetch(`${API_URL}/api/categories`);
 
     const fetchAllProducts = async () => {
       try {
-     const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+   
 const response = await fetch(`${API_URL}/api/categories`);
         if (response.ok) {
           const data = await response.json();

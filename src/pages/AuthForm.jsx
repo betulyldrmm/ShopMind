@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+
 const response = await fetch(`${API_URL}/api/categories`);
 const axios = {
   get: async (url, config = {}) => {
@@ -83,7 +84,7 @@ function AuthForm() {
 
   const checkServerStatus = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/test`, { timeout: 5000 });
+     const response = await fetch(`${API_URL}/api/products`);
       setServerStatus('✅ Server aktif');
     } catch (error) {
       if (error.name === 'AbortError') {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { 
-  ShoppingCart, 
-  Heart, 
-  Star, 
+import {
+  ShoppingCart,
+  Heart,
+  Star,
   Filter,
   Grid3X3,
   List,
@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import './CategoryPages.css';
 import Header2 from '../Header2/Header2.jsx';
+
+const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
 
 const CategoryPage = () => {
   const { categorySlug, subCategorySlug } = useParams();
@@ -26,12 +28,12 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState('newest');
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [showFilters, setShowFilters] = useState(false);
-
+  
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
 
+  // Kullanıcı ve sepet verilerini yükle
   useEffect(() => {
-  
     const userData = localStorage.getItem('user');
     if (userData) {
       try {
@@ -40,6 +42,7 @@ const CategoryPage = () => {
         console.error('Kullanıcı verisi okunamadı:', error);
       }
     }
+    
     const cartData = localStorage.getItem('sepet');
     if (cartData) {
       try {
@@ -53,52 +56,49 @@ const CategoryPage = () => {
     }
   }, []);
 
-useEffect(() => {
-  const fetchCategoryData = async () => {
-    try {
-      setLoading(true);
-      
-      if (subCategorySlug) {
-   
-        setError('Alt kategori sistemi henüz aktif değil');
+  // Kategori verilerini getir
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      try {
+        setLoading(true);
+        
+        // Alt kategori kontrolü
+        if (subCategorySlug) {
+          setError('Alt kategori sistemi henüz aktif değil');
+          setLoading(false);
+          return;
+        }
+        
+        console.log('API çağrısı yapılıyor:', `${API_URL}/api/products`);
+        
+        // API çağrısı
+        const response = await fetch(`${API_URL}/api/products`);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('API Hatası:', response.status, errorText);
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        
+        const data = await response.json();
+        console.log('API Yanıtı:', data);
+        
+        if (data.success) {
+          setCategoryData(data.data);
+          setProducts(data.data.products || []);
+        } else {
+          throw new Error(data.error || 'Veriler alınamadı');
+        }
+        
+        setError(null);
+      } catch (error) {
+        console.error('Kategori verileri alınamadı:', error);
+        setError(error.message);
+        setProducts([]);
+      } finally {
         setLoading(false);
-        return;
       }
-      
-
-      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
-const response = await fetch(`${API_URL}/api/categories`);
-      
-      console.log('API çağrısı yapılıyor:', apiUrl);
-      
-      const response = await fetch(apiUrl);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Hatası:', response.status, errorText);
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
-      
-      const data = await response.json();
-      console.log('API Yanıtı:', data);
-      
-      if (data.success) {
-        setCategoryData(data.data);
-        setProducts(data.data.products || []);
-      } else {
-        throw new Error(data.error || 'Veriler alınamadı');
-      }
-      
-      setError(null);
-    } catch (error) {
-      console.error('Kategori verileri alınamadı:', error);
-      setError(error.message);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    };
   if (categorySlug) {
     fetchCategoryData();
   }

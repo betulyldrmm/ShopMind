@@ -1,6 +1,12 @@
+// ProfilePage.jsx - API çağrılarını düzelt
+
 import React, { useState, useEffect } from 'react';
 import { User, Edit2, Lock, Trash2, Save, X, Eye, EyeOff, MapPin, Plus, Mail, Phone, Calendar, UserCheck } from 'lucide-react';
 import './ProfilePage.css'
+
+// ✅ API URL'yi doğru tanımla
+const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+
 const ProfilePage = () => {
   const currentUserId = 'user_1234567890_abc123def';
   
@@ -58,10 +64,16 @@ const ProfilePage = () => {
     fetchUserAddresses();
   }, []);
 
+  // ✅ fetchUserData fonksiyonunu düzelt
   const fetchUserData = async () => {
     try {
-    const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
-const response = await fetch(`${API_URL}/api/categories`);
+      const response = await fetch(`${API_URL}/api/user/profile`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // Authorization header ekleyebilirsiniz
+        }
+      });
       const data = await response.json();
       
       if (data.success) {
@@ -85,9 +97,15 @@ const response = await fetch(`${API_URL}/api/categories`);
     }
   };
 
+  // ✅ fetchUserStats fonksiyonunu düzelt
   const fetchUserStats = async () => {
     try {
-     const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+      const response = await fetch(`${API_URL}/api/user/stats`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       const data = await response.json();
       
       if (data.success) {
@@ -98,9 +116,15 @@ const response = await fetch(`${API_URL}/api/categories`);
     }
   };
 
+  // ✅ fetchUserAddresses fonksiyonunu düzelt
   const fetchUserAddresses = async () => {
     try {
-      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+      const response = await fetch(`${API_URL}/api/user/addresses`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       const data = await response.json();
       
       if (data.success) {
@@ -116,12 +140,12 @@ const response = await fetch(`${API_URL}/api/categories`);
     setTimeout(() => setMessage({ type: '', text: '' }), 5000);
   };
 
-  // Profil güncelleme
+  // ✅ Profil güncelleme fonksiyonunu düzelt
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     
     try {
-      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app", {
+      const response = await fetch(`${API_URL}/api/user/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileForm)
@@ -141,7 +165,7 @@ const response = await fetch(`${API_URL}/api/categories`);
     }
   };
 
-  // Şifre değiştirme
+  // ✅ Şifre değiştirme fonksiyonunu düzelt
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     
@@ -156,7 +180,7 @@ const response = await fetch(`${API_URL}/api/categories`);
     }
     
     try {
-     const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app"; {
+      const response = await fetch(`${API_URL}/api/user/password`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -178,12 +202,12 @@ const response = await fetch(`${API_URL}/api/categories`);
     }
   };
 
-  // Kullanıcı adı değiştirme
+  // ✅ Kullanıcı adı değiştirme fonksiyonunu düzelt
   const handleUsernameChange = async (e) => {
     e.preventDefault();
     
     try {
-   const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app"; {
+      const response = await fetch(`${API_URL}/api/user/username`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newUsername: usernameForm.newUsername })
@@ -202,12 +226,15 @@ const response = await fetch(`${API_URL}/api/categories`);
     }
   };
 
-  // Adres ekleme/güncelleme
+  // ✅ Adres ekleme/güncelleme fonksiyonunu düzelt
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
     
     try {
-     const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+      const url = addressEditMode && addressEditMode !== 'new' 
+        ? `${API_URL}/api/user/addresses/${addressEditMode}`
+        : `${API_URL}/api/user/addresses`;
+      
       const method = addressEditMode && addressEditMode !== 'new' ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
@@ -234,12 +261,15 @@ const response = await fetch(`${API_URL}/api/categories`);
     }
   };
 
-  // Adres silme
+  // ✅ Adres silme fonksiyonunu düzelt
   const handleDeleteAddress = async (addressId) => {
     if (!window.confirm('Bu adresi silmek istediğinizden emin misiniz?')) return;
     
     try {
-      const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+      const response = await fetch(`${API_URL}/api/user/addresses/${addressId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      });
       
       const data = await response.json();
       
