@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CommentSystem.css';
-import { API_URL } from '../../config/api';
+import { API_URL } from '../config/api';
 
 const CommentSystem = ({ productId }) => {
   const [analyticsData, setAnalyticsData] = useState({
