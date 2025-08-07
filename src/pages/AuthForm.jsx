@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { API_URL } from '../../config/api';
+import { API_URL } from '../config/api';
 const axios = {
   get: async (url, config = {}) => {
     const response = await fetch(url, {
