@@ -14,7 +14,7 @@ import {
 import './CategoryPages.css';
 import Header2 from '../Header2/Header2.jsx';
 
-import { API_URL } from '../config/api';
+import { API_URL } from '../../config/api';
 
 const CategoryPage = () => {
   const { categorySlug, subCategorySlug } = useParams();

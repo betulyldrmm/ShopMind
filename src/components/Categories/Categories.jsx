@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Categories.css';
-import { API_URL } from '../config/api';
+import { API_URL } from '../../config/api';
 import {
   FaTshirt,
   FaMobileAlt,

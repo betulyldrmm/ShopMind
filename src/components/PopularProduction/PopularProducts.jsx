@@ -3,7 +3,7 @@ import { Heart, ShoppingCart, Star } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import './PopularProducts.css';
 
-import { API_URL } from '../config/api';
+import { API_URL } from '../../config/api';
 
 function PopularProducts() {
   const [popularProducts, setPopularProducts] = useState([]);

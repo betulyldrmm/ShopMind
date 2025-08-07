@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, ChevronLeft, ChevronRight, Tag, Clock } from 'lucide-react';
 import './Sale.css';
 
-import { API_URL } from '../config/api';
+import { API_URL } from '../../config/api';
 
 const Sale = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
