@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CommentSystem.css';
 import { API_URL } from '../../config/api';
+
 const CommentSystem = ({ productId }) => {
   const [analyticsData, setAnalyticsData] = useState({
     overview: null,
@@ -9,125 +10,90 @@ const CommentSystem = ({ productId }) => {
     trends: [],
     sentimentDistribution: [],
     wordCloud: null,
-    productFeatures: null // Yeni eklenen
+    productFeatures: null
   });
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
 
-
-
-  // ProductId'yi doğrula ve düzelt
   const validateProductId = (id) => {
-    console.log('🔍 validateProductId çağrıldı:', { id, type: typeof id });
-    
-    // String'den number'a çevir
     if (typeof id === 'string' && id.trim() !== '') {
       const numId = parseInt(id.trim());
-      if (!isNaN(numId) && numId > 0) {
-        console.log('✅ String ProductId numbera çevrildi:', numId);
-        return numId;
-      }
+      if (!isNaN(numId) && numId > 0) return numId;
     }
-    
-    // Zaten number ise kontrol et
-    if (typeof id === 'number' && id > 0) {
-      console.log('✅ ProductId zaten geçerli number:', id);
-      return id;
-    }
-    
-    // URL'den product ID'yi almaya çalış
+    if (typeof id === 'number' && id > 0) return id;
+
     const urlParams = new URLSearchParams(window.location.search);
     const urlProductId = urlParams.get('productId') || urlParams.get('id');
     if (urlProductId) {
       const numUrlId = parseInt(urlProductId);
-      if (!isNaN(numUrlId) && numUrlId > 0) {
-        console.log('✅ URLden ProductId alındı:', numUrlId);
-        return numUrlId;
-      }
+      if (!isNaN(numUrlId) && numUrlId > 0) return numUrlId;
     }
-    
-    // URL path'inden almaya çalış (örn: /product/62)
+
     const pathMatch = window.location.pathname.match(/\/product\/(\d+)|\/(\d+)$/);
     if (pathMatch) {
       const pathId = parseInt(pathMatch[1] || pathMatch[2]);
-      if (!isNaN(pathId) && pathId > 0) {
-        console.log('✅ URL pathinden ProductId alındı:', pathId);
-        return pathId;
-      }
+      if (!isNaN(pathId) && pathId > 0) return pathId;
     }
-    
-    console.log('❌ ProductId doğrulanamadı:', { id, type: typeof id });
+
     return null;
   };
 
-  // Belirli ürün için analiz verilerini çek
+  const API_BASE_URL = API_URL;
+
   const fetchProductAnalyticsData = async (validatedProductId = null) => {
     const targetProductId = validatedProductId || validateProductId(productId);
-    
-    console.log('🔄 fetchProductAnalyticsData başladı:', { 
-      originalProductId: productId, 
-      validatedProductId: targetProductId,
-      type: typeof targetProductId 
-    });
-    
     if (!targetProductId) {
-      const errorMsg = `Geçersiz ürün ID: ${productId} (doğrulanmış: ${targetProductId})`;
-      console.log('❌', errorMsg);
-      setError(errorMsg);
+      setError(`Geçersiz ürün ID: ${productId}`);
       setIsLoading(false);
       return;
     }
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
-      console.log(`📊 Ürün ${targetProductId} analiz verileri çekiliyor...`);
-      
       const overviewUrl = `${API_BASE_URL}/comments/analytics/overview/${targetProductId}`;
-      console.log('📡 Request URL:', overviewUrl);
-      
       const overviewResponse = await fetch(overviewUrl);
-      
+
       if (!overviewResponse.ok) {
         const errorText = await overviewResponse.text();
-        console.error('❌ API Error Response:', errorText);
         throw new Error(`Overview API hatası: ${overviewResponse.status} - ${errorText}`);
       }
 
       const overviewData = await overviewResponse.json();
 
       const [
-        positiveRes, 
-        negativeRes, 
-        trendsRes, 
+        positiveRes,
+        negativeRes,
+        trendsRes,
         distributionRes,
         wordCloudRes,
-        productFeaturesRes // Yeni eklenen
+        productFeaturesRes
       ] = await Promise.all([
-        fetch(`${API_BASE_URL}/comments/analytics/most-positive/${targetProductId}`).catch(err => ({ ok: false })),
-        fetch(`${API_BASE_URL}/comments/analytics/most-negative/${targetProductId}`).catch(err => ({ ok: false })),
-        fetch(`${API_BASE_URL}/comments/analytics/trends/${targetProductId}`).catch(err => ({ ok: false })),
-        fetch(`${API_BASE_URL}/comments/analytics/sentiment-distribution/${targetProductId}`).catch(err => ({ ok: false })),
-        fetch(`${API_BASE_URL}/comments/analytics/word-cloud/${targetProductId}`).catch(err => ({ ok: false })),
-        fetch(`${API_BASE_URL}/comments/analytics/product-features/${targetProductId}`).catch(err => ({ ok: false })) // Yeni eklenen
+        fetch(`${API_BASE_URL}/comments/analytics/most-positive/${targetProductId}`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE_URL}/comments/analytics/most-negative/${targetProductId}`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE_URL}/comments/analytics/trends/${targetProductId}`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE_URL}/comments/analytics/sentiment-distribution/${targetProductId}`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE_URL}/comments/analytics/word-cloud/${targetProductId}`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE_URL}/comments/analytics/product-features/${targetProductId}`).catch(() => ({ ok: false }))
       ]);
 
       const [
-        positiveComments, 
-        negativeComments, 
+        positiveComments,
+        negativeComments,
         trends,
         sentimentDistribution,
         wordCloud,
-        productFeatures // Yeni eklenen
+        productFeatures
       ] = await Promise.all([
         positiveRes.ok ? positiveRes.json().catch(() => []) : [],
         negativeRes.ok ? negativeRes.json().catch(() => []) : [],
         trendsRes.ok ? trendsRes.json().catch(() => []) : [],
         distributionRes.ok ? distributionRes.json().catch(() => []) : [],
         wordCloudRes.ok ? wordCloudRes.json().catch(() => null) : null,
-        productFeaturesRes.ok ? productFeaturesRes.json().catch(() => null) : null // Yeni eklenen
+        productFeaturesRes.ok ? productFeaturesRes.json().catch(() => null) : null
       ]);
 
       setAnalyticsData({
@@ -137,13 +103,11 @@ const CommentSystem = ({ productId }) => {
         trends,
         sentimentDistribution,
         wordCloud,
-        productFeatures // Yeni eklenen
+        productFeatures
       });
 
       setIsLoading(false);
-      
     } catch (error) {
-      console.error('❌ Ürün analiz verileri yüklenirken hata:', error);
       setError(`Analiz verileri yüklenemedi: ${error.message}`);
       setAnalyticsData({
         overview: null,
@@ -152,29 +116,23 @@ const CommentSystem = ({ productId }) => {
         trends: [],
         sentimentDistribution: [],
         wordCloud: null,
-        productFeatures: null // Yeni eklenen
+        productFeatures: null
       });
       setIsLoading(false);
     }
   };
 
-  // Test amaçlı API bağlantısını kontrol et
   const testApiConnection = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/test`);
-      if (response.ok) {
-        return true;
-      }
-      return false;
-    } catch (error) {
+      return response.ok;
+    } catch {
       return false;
     }
   };
 
-  // Belirli ürünün yorumlarını yeniden analiz et
   const reanalyzeProductComments = async () => {
     const validatedProductId = validateProductId(productId);
-    
     if (!validatedProductId) {
       alert('Geçersiz ürün ID! Sayfa yenilenerek tekrar deneyin.');
       return;
@@ -194,31 +152,15 @@ const CommentSystem = ({ productId }) => {
       }
 
       const result = await response.json();
-      
       await fetchProductAnalyticsData(validatedProductId);
-      
       alert(`✅ ${result.updatedCount} yorum yeniden analiz edildi!`);
-      
     } catch (error) {
       alert(`❌ Yeniden analiz sırasında hata oluştu: ${error.message}`);
     }
   };
 
   useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/categories`);
-      const data = await response.json();
-      setCategories(data); // örnek
-    } catch (error) {
-      console.error("Kategoriler alınamadı:", error);
-    }
-  };
-
-  fetchCategories(); // fonksiyonu çağır
-}, []);
-
-
+    const initializeData = async () => {
       const apiConnected = await testApiConnection();
       if (!apiConnected) {
         setError('API sunucusuna bağlanılamıyor. Sunucunun çalıştığından emin olun.');
@@ -226,11 +168,30 @@ const CommentSystem = ({ productId }) => {
         return;
       }
 
+      const validatedProductId = validateProductId(productId);
       await fetchProductAnalyticsData(validatedProductId);
     };
 
     initializeData();
   }, [productId]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/categories`);
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Kategoriler alınamadı:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  
+
+
 
   const validatedProductId = validateProductId(productId);
 
