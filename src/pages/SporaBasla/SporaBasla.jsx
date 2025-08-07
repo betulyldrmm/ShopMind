@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SporaBasla.css';
 import Header2 from '../../components/Header2/Header2';
- const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+import { API_URL } from '../config/api';
 const SporaBasla = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -42,7 +42,7 @@ const SporaBasla = () => {
       setLoading(true);
       
   
-      const response = await fetch(`${API_BASE_URL}/api/categories/3/products`);
+      const response = await fetch(`${API_URL}/api/categories/3/products`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

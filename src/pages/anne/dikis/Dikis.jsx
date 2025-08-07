@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import './Dikis.css';
 
-const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+import { API_URL } from '../../config/api';
 const response = await fetch(`${API_URL}/api/categories`);
 
 

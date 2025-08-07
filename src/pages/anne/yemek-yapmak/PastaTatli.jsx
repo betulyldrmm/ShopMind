@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import './PastaTatli.css';
+import { API_URL } from '../../config/api';
 
-const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
-const response = await fetch(`${API_URL}/api/categories`);
+
 // Kategori bilgileri (UI için)
 const categories = {
   'pasta-tatli': { name: '🍰 Pasta & Tatlı', color: '#ff6b9d' },
@@ -101,7 +101,7 @@ const PastaTatli = () => {
       
       try {
         console.log('Tüm ürünler çekiliyor...');
-        const response = await fetch(`${API_BASE_URL}/api/products`);
+        const response = await fetch(`${API_URL}/api/products`);
         
         if (response.ok) {
           const data = await response.json();
@@ -688,6 +688,7 @@ const PastaTatli = () => {
         </div>
       )}
 
+      {/* Performans Bilgisi */}
      
 
       {/* Ürün Detay Modal */}

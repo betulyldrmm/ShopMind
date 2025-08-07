@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
-
+import { API_URL } from '../../config/api';
 const axios = {
   get: async (url, config = {}) => {
     const response = await fetch(url, {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Categories.css';
+import { API_URL } from '../config/api';
 import {
   FaTshirt,
   FaMobileAlt,
@@ -27,7 +28,7 @@ const iconMap = {
   'FaAppleAlt': <FaAppleAlt />,
 };
 
-const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+
 
 function Categories() {
   const [categories, setCategories] = useState([]);

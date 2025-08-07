@@ -6,7 +6,7 @@ import { Heart, ShoppingCart } from 'lucide-react';
 import './Arac.css';
 
 // ✅ API URL'yi doğru tanımla
-const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+import { API_URL } from '../../config/api';
 
 // Araç kategorileri (UI için)
 const categories = {

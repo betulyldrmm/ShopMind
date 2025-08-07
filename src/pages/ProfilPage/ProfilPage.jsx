@@ -4,9 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Edit2, Lock, Trash2, Save, X, Eye, EyeOff, MapPin, Plus, Mail, Phone, Calendar, UserCheck } from 'lucide-react';
 import './ProfilePage.css'
 
-// ✅ API URL'yi doğru tanımla
-const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
-
+import { API_URL } from '../../config/api';
 const ProfilePage = () => {
   const currentUserId = 'user_1234567890_abc123def';
   

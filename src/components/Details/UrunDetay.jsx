@@ -19,7 +19,7 @@ import ProductComments from "../../pages/ProductComments/ProductComments.jsx";
 import CommentSystem from '../../pages/CommentSystem.jsx';
 import Header2 from '../Header2/Header2.jsx';
 
-const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+import { API_URL } from '../config/api';
 
 const UrunDetay = () => {
   const { urunId } = useParams();

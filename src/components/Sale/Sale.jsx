@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, ChevronLeft, ChevronRight, Tag, Clock } from 'lucide-react';
 import './Sale.css';
 
-const API_URL = "https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app";
+import { API_URL } from '../config/api';
 
 const Sale = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
