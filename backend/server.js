@@ -16,11 +16,11 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-// ✅ CORS ayarlarını düzeltilmiş hali
 const allowedOrigins = [
   'https://deluxe-biscochitos-c1be48.netlify.app',
   'https://backendd1234512.vercel.app',
-  'https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app', // ✅ Bu eklenmeliydi!
+  'https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app',
+  'https://legendary-gecko-5e26e3.netlify.app', // ✅ YENİ FRONTEND URL'İNİZ
   'http://localhost:3000',
   'http://localhost:5173',
   'http://localhost:5174'
@@ -32,6 +32,7 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.includes(origin)) {
+      console.log('✅ CORS allowed for:', origin);
       callback(null, true);
     } else {
       console.log('🚫 CORS blocked origin:', origin);
