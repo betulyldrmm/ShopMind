@@ -3,7 +3,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
 const path = require('path');
-require('dotenv').config(); // .env kullanıyorsan
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,8 +16,9 @@ const pool = new Pool({
 
 // CORS ayarları
 const allowedOrigins = [
+  'https://famous-zabaione-e408c8.netlify.app', // ✅ Mevcut frontend domainin
   'https://deluxe-biscochitos-c1be48.netlify.app',
-  'https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app', // Yeni backend linkin!
+  'https://shop-mind-6mf5-dyt5ppllk-betuls-projects-5b7c9a73.vercel.app',
   'http://localhost:3000',
   'http://localhost:5173',
   'http://localhost:5174',
@@ -42,6 +43,17 @@ app.use(express.json());
 // Test route
 app.get('/', (req, res) => {
   res.send('API çalışıyor...');
+});
+
+// ✅ Yeni /api/categories endpointi
+app.get('/api/categories', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM categories');
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Kategoriler alınırken hata oluştu.' });
+  }
 });
 
 // Yönlendirme
